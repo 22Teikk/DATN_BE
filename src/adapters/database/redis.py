@@ -6,16 +6,14 @@ import redis
 class Redis:
     def __init__(self):
 
-        redis_host = ""
-        redis_port = ""
-        redis_db = ""
-        redis_password = ""
+        redis_host = "localhost"
+        redis_port = "6379"
+        redis_db = "0"
 
         self.cache = redis.Redis(
             host=redis_host,
             port=redis_port,
             db=redis_db,
-            password=redis_password,
         )
         if self.cache.ping():
             print("Connected to Redis successfully!")
