@@ -29,10 +29,6 @@ class RedisCache(EntityCache):
                 value[i : i + chunk_size] for i in range(0, num_rows, chunk_size)
             ]
 
-        logger.info(
-            f"set_cache {key}: Total items {num_rows}, Chunks: {len(data_chunks)}"
-        )
-
         # Lưu từng chunk vào Redis
         for i, chunk in enumerate(data_chunks):
             redis_key = f"{key}:{i}"
