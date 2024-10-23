@@ -1,0 +1,10 @@
+flask                   
+flask-restful           
+flask-socketio          
+pymongo                 
+flask_pymongo           
+marshmallow             
+pytest                 
+redis
+flask-restx
+numpy
