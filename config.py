@@ -1,0 +1,1 @@
+AUTHENTICATION_KEY = 'teikk'

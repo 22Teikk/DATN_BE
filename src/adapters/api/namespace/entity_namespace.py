@@ -1,4 +1,5 @@
 import os
+from config import AUTHENTICATION_KEY
 from src.domain.entities.utils import schema_to_restx_model
 from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.entity_container import EntityContainer
@@ -33,7 +34,7 @@ class EntityNamespace:
             def get(self):
                 auth_user = request.headers.get("Authorization")
                 print(auth_user)
-                if auth_user == os.getenv("ADMIN_TOKEN", ""):
+                if auth_user == AUTHENTICATION_KEY:
                     items = container.usecase.find_by_query()
                     if items:
                         results = schema.dump(items, many=True)
