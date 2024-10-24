@@ -1,1 +1,1 @@
-AUTHENTICATION_KEY = 'teikk'
+AUTHENTICATION_KEY = "teikk"
