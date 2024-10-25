@@ -75,6 +75,7 @@ class EntityNamespace:
             @namespace.response(404, f"{entity_name} not found")
             def get(self, _id=None):
                 if _id:
+                    print(">>>>>>>ID: " + _id)
                     item = container.usecase.find_by_id(_id)
                     if not item:
                         return {"error": "Item not found"}, 404
@@ -98,32 +99,13 @@ class EntityNamespace:
 
                 try:
                     # Xác thực và tuần tự hóa dữ liệu với schema
-                    data_saved.update(data_update_request)
-                    valid_data = schema.load(data_saved)
-                    print(valid_data)
-                    # Nếu valid_data là dict, cập nhật _id
-                    if isinstance(valid_data, dict):
-                        valid_data["_id"] = _id
-                        data_saved.update(valid_data)
-                    else:
-                        # Nếu valid_data là một đối tượng, gán _id vào thuộc tính _id của nó
-                        valid_data._id = _id
-                        data_saved.update(valid_data)
-
-                    print(valid_data)
+                    valid_data = schema.load(data_update_request)
+                    updated = container.usecase.update(valid_data)
+                    return {"updated": updated}, 200
                 except Exception as e:
                     # Trả về lỗi 500 cho các lỗi khác
                     print(f"Internal Server Error: {str(e)}")
                     return {"error": "Internal server error", "message": str(e)}, 400
-
-                # Tiến hành cập nhật thông qua usecase
-                updated = container.usecase.update(data_saved)
-                print("updated", updated, data_saved)
-                if updated:
-                    return {"updated": updated}, 200
-                else:
-                    # Trả về lỗi 404 nếu không tìm thấy thực thể cần cập nhật
-                    return {"error": f"{entity_name} not found"}, 404
 
             @namespace.doc(f"delete_{entity_name}")
             @namespace.response(204, f"{entity_name} deleted")

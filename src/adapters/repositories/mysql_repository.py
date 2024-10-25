@@ -5,7 +5,6 @@ from typing import Callable, Dict, List, Any
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-
 from src.adapters.repositories.entity_repository import EntityRepository
 
 class MySQLRepository(EntityRepository):
@@ -24,15 +23,16 @@ class MySQLRepository(EntityRepository):
 
     def find_by_id(self, _id: Any) -> Dict[str, Any]:
         """Tìm kiếm bản ghi theo ID."""
-        return self.session.query(self.table).filter_by(id=_id).first()
+        print(">>>>>>> Find By ID " + str(_id))
+        return self.session.query(self.table).filter_by(_id=_id).first()
 
     def insert(self, data: Dict[str, Any]) -> int:
         """Chèn một bản ghi mới vào bảng."""
         try:
-            new_record = self.table(**data)
-            self.session.add(new_record)
-            self.session.commit()
-            return new_record.id  # Giả định có trường id tự động tăng
+            stmt = insert(self.table).values(**data)
+            result = self.session.execute(stmt)
+            self.session.commit()  
+            return result.inserted_primary_key[0]
         except IntegrityError:
             self.session.rollback()
             print(f"Integrity error occurred during insert: {data}")
@@ -45,9 +45,11 @@ class MySQLRepository(EntityRepository):
     def update(self, data: Dict[str, Any]) -> int:
         """Cập nhật bản ghi đã tồn tại."""
         try:
-            self.session.query(self.table).filter_by(id=data['id']).update(data)
+            test = self.session.query(self.table).filter_by(_id = data.get('_id')).first()
+            print(">>>>>>>> Update " + str(test))
+            # .update(data)
             self.session.commit()
-            return data['id']
+            return data['_id']
         except Exception as e:
             self.session.rollback()
             print(f"Update error: {e}")
@@ -69,7 +71,7 @@ class MySQLRepository(EntityRepository):
     def delete(self, _id: Any) -> int:
         """Xóa bản ghi theo ID."""
         try:
-            result = self.session.query(self.table).filter_by(id=_id).delete()
+            result = self.session.query(self.table).filter_by(_id=_id).delete()
             self.session.commit()
             return result
         except Exception as e:

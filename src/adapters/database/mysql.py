@@ -7,7 +7,6 @@ class MySQL:
     def __init__(self):
         try:
             self.engine = create_engine("mysql+pymysql://root:kietnt@94.237.64.46:3306/datn")
-            
             Session = sessionmaker(bind=self.engine)
             self.session = Session()
 

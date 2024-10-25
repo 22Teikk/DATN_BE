@@ -5,7 +5,7 @@ from src.domain.entities.utils import Base
 
 class Category(Entity):
     __tablename__ = 'category'
-    _id = Column(String(length=36),ForeignKey('entities._id'), primary_key=True)
+    _id = Column(String(length=36),ForeignKey('entities._id') ,primary_key=True)
     name = Column(String(length=255))
     def __init__(
         self,
