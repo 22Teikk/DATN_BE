@@ -1,5 +1,6 @@
 import os
 
+from src.domain.entities.category import Category
 from src.domain.entities.entity import Entity
 from src.adapters.repositories.mysql_repository import MySQLRepository
 from src.adapters.database.mysql import MySQL
@@ -23,11 +24,11 @@ class RepositoryContainer:
         # self.entity_repository = MongoRepository(
         #     self.mongodb.get_collection("entities"), self._cache
         # )
-        self.categories_repository = MongoRepository(
-            self.mongodb.get_collection("categories"), self._cache
-        )
 
     def init_tables(self):
         self.entity_repository = MySQLRepository(
-            self.sqldb.get_table(Entity.__tablename__, Entity), self._cache
+            self.sqldb.get_session(), self.sqldb.get_table(Entity.__tablename__, Entity), self._cache
+        )
+        self.category_repository = MySQLRepository(
+            self.sqldb.get_session ,self.sqldb.get_table(Category.__tablename__, Category), self._cache
         )

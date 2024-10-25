@@ -43,6 +43,7 @@ if [ "$option" == "-c" ]; then
 from src.domain.entities.entity import Entity
 
 class ${object_name_upper}(Entity):
+    __tablename__ = '${object_name}'
     def __init__(self, _id: str):
         super().__init__(_id)
     " >>  src/domain/entities/${object_name}.py
@@ -67,7 +68,7 @@ class ${object_name_upper}Usecase(EntityUsecase):
 from marshmallow import Schema, fields
 
 class ${object_name_upper}Schema(Schema):
-    _id = fields.Str(required=True)
+    _id = fields.Str(required=True, metadata={"description": "Category ID"})
 
     " >>  src/domain/schemas/${object_name}_schema.py
 
@@ -159,9 +160,6 @@ class ${object_name_upper}Namespace(EntityNamespace):
 EOF
 
 
-
-
-
     # tạo test api
     touch tests/apis/test_${object_name}.py
     echo "Created tests/apis/test_${object_name}.py"
@@ -170,14 +168,11 @@ EOF
 cat << EOF >> tests/apis/test_${object_name}.py 
 import os
 from src.domain.entities.utils import get_current_timestamp_str
-from src.domain.entities.logger import Logger
 from src.domain.entities.cost import *
 from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.${object_name}_container import ${object_name_upper}Container
 import requests
 import pytest
-
-logger = Logger(__name__)
 
 @pytest.fixture(scope="module")
 def host():
@@ -190,7 +185,6 @@ def endpoint(host):
 
 
 def test_${object_name}_api(host, endpoint):
-    logger.debug(f"endpoint: {endpoint}")
     headers = {"Content-Type": "application/json"}
     _id = "1"
 
@@ -225,10 +219,8 @@ EOF
 
     cat << EOF >> tests/repositories/test_${object_name}_repository.py 
 from src.domain.entities.utils import get_current_timestamp_str
-from src.domain.entities.logger import Logger
 from src.domain.schemas.${object_name}_schema import ${object_name_upper}Schema
 from src.adapters.repositories.${object_name}_repository import ${object_name_upper}Repository
-logger = Logger(__name__)
 
 def test_${object_name}_repository():
     ${object_name}_repository = ${object_name_upper}Repository()

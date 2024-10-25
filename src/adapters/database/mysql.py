@@ -16,6 +16,9 @@ class MySQL:
             print(">>> Không thể kết nối tới MySQL.", e)
             exit(1)
 
+    def get_session(self):
+        return self.session
+
     def get_table(self, table_name, model: type):
         meta = MetaData()
 
