@@ -5,7 +5,6 @@ from src.frameworks.socket_io_application import SocketIOApplication
 
 
 if __name__ == "__main__":
-    mysql = MySQL()
     flask_app = FlaskApplication()
     socket = SocketIOApplication(flask_app.framework)
 

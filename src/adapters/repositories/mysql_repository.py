@@ -1,12 +1,12 @@
-from sqlalchemy import create_engine 
+from sqlalchemy import Table, create_engine 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.mysql import insert
 
-class MySQLRepository:
-    def __init__(self, engine_url: str, cache):
-        self.engine = create_engine(engine_url)
-        self.Session = sessionmaker(bind=self.engine)
-        self.session = self.Session()
+from src.adapters.repositories.entity_repository import EntityRepository
+
+class MySQLRepository(EntityRepository):
+    def __init__(self, table: Table, cache):
+        self.table = table
         self._cache = cache
 
     def update(self, table, data: dict):
@@ -77,7 +77,7 @@ class MySQLRepository:
     def get_cache_manager(self):
         return self._cache
 
-    def get_session_manager(self):
+    def get_table_manager(self):
         return self.session
 
     def set_cache(self, key, values, expire=0, cache_db=0, chunk_size=10000):
@@ -94,3 +94,10 @@ class MySQLRepository:
 
     def get_cache(self, key):
         return self._cache.get_cache(key)
+
+    def find_by_dict(self, dict: dict):
+        raise NotImplementedError
+
+    def get_collection_manager(self):
+        pass
+
