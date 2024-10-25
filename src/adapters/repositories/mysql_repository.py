@@ -1,50 +1,65 @@
 from sqlalchemy import Table, create_engine 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.mysql import insert
+from typing import Callable, Dict, List, Any
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from src.adapters.repositories.entity_repository import EntityRepository
 
 class MySQLRepository(EntityRepository):
-    def __init__(self, table: Table, cache):
+    def __init__(self, session: Session, table: Table, cache):
+        self.session = session
         self.table = table
         self._cache = cache
 
-    def update(self, table, data: dict):
+    def find_by_query(self, query: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
+        """Tìm kiếm bản ghi theo truy vấn."""
+        print(">>>>>>>> Find by query " + str(query))
+        if query == {}:
+            return self.session.query(self.table).all()
+        else: 
+            return self.session.query(self.table).filter_by(**query).all()
+
+    def find_by_id(self, _id: Any) -> Dict[str, Any]:
+        """Tìm kiếm bản ghi theo ID."""
+        print(">>>>>>> Find By ID " + str(_id))
+        return self.session.query(self.table).filter_by(_id=_id).first()
+
+    def insert(self, data: Dict[str, Any]) -> int:
+        """Chèn một bản ghi mới vào bảng."""
         try:
-            self.session.query(table).filter_by(id=data['id']).update(data)
-            self.session.commit()
-            return {"status": "success"}
-        except Exception as e:
+            stmt = insert(self.table).values(**data)
+            result = self.session.execute(stmt)
+            self.session.commit()  
+            return result.inserted_primary_key[0]
+        except IntegrityError:
             self.session.rollback()
-            print(f"Update error: {e}")
-            return {"status": "error", "error": str(e)}
-
-    def chunk(self, table, chunk_size=10000, on_data_ready=lambda x: None):
-        total_documents = self.session.query(table).count()
-        for offset in range(0, total_documents, chunk_size):
-            data_chunk = self.session.query(table).offset(offset).limit(chunk_size).all()
-            on_data_ready(data_chunk)
-
-    def find_by_query(self, table, query: dict = {}) -> list:
-        return self.session.query(table).filter_by(**query).all()
-
-    def find_by_id(self, table, _id: int):
-        return self.session.query(table).filter_by(id=_id).first()
-
-    def insert(self, table, data):
-        try:
-            self.session.add(table(**data))
-            self.session.commit()
-            return {"status": "success", "id": data.get('id')}
+            print(f"Integrity error occurred during insert: {data}")
+            return -1  # Hoặc ném ra ngoại lệ
         except Exception as e:
             self.session.rollback()
             print(f"Insert error: {e}")
-            return {"status": "error", "error": str(e)}
+            return -1  # Hoặc ném ra ngoại lệ
 
-    def upserts(self, table, datas: list):
+    def update(self, data: Dict[str, Any]) -> int:
+        """Cập nhật bản ghi đã tồn tại."""
+        try:
+            test = self.session.query(self.table).filter_by(_id = data.get('_id')).first()
+            print(">>>>>>>> Update " + str(test))
+            # .update(data)
+            self.session.commit()
+            return data['_id']
+        except Exception as e:
+            self.session.rollback()
+            print(f"Update error: {e}")
+            return -1
+
+    def upserts(self, datas: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Chèn hoặc cập nhật nhiều bản ghi."""
         try:
             for data in datas:
-                stmt = insert(table).values(data).on_duplicate_key_update(data)
+                stmt = insert(self.table).values(data).on_duplicate_key_update(**data)
                 self.session.execute(stmt)
             self.session.commit()
             return {"status": "success"}
@@ -53,51 +68,63 @@ class MySQLRepository(EntityRepository):
             print(f"Upsert error: {e}")
             return {"status": "error", "error": str(e)}
 
-    def delete(self, table, _id: int):
+    def delete(self, _id: Any) -> int:
+        """Xóa bản ghi theo ID."""
         try:
-            result = self.session.query(table).filter_by(id=_id).delete()
+            result = self.session.query(self.table).filter_by(_id=_id).delete()
             self.session.commit()
             return result
         except Exception as e:
             self.session.rollback()
             print(f"Delete error: {e}")
-            return {"status": "error", "error": str(e)}
+            return -1
 
-    def clean(self, table):
+    def chunk(
+        self,
+        query: Dict[str, Any] = {},
+        chunk_size: int = 10000,
+        on_data_ready: Callable[[List[Dict[str, Any]]], None] = lambda x: None,
+    ):
+        """Lấy dữ liệu theo từng khối."""
+        total_documents = self.session.query(self.table).filter_by(**query).count()
+        for offset in range(0, total_documents, chunk_size):
+            data_chunk = self.session.query(self.table).filter_by(**query).offset(offset).limit(chunk_size).all()
+            on_data_ready(data_chunk)
+
+    def clean(self) -> int:
+        """Xóa tất cả bản ghi trong bảng."""
         try:
-            result = self.session.query(table).delete()
+            result = self.session.query(self.table).delete()
             self.session.commit()
             return result
         except Exception as e:
             self.session.rollback()
             print(f"Clean error: {e}")
-            return {"status": "error", "error": str(e)}
+            return -1
 
     # Cache methods
     def get_cache_manager(self):
         return self._cache
 
+    def find_by_dict(self, dict: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Tìm kiếm bản ghi theo từ điển."""
+        return self.session.query(self.table).filter_by(**dict).all()
+
     def get_table_manager(self):
-        return self.session
+        """Lấy quản lý bảng (session hoặc table)."""
+        return self.table
 
-    def set_cache(self, key, values, expire=0, cache_db=0, chunk_size=10000):
-        return self._cache.set_cache(key, values, expire, cache_db, chunk_size)
-
-    def find_cache_keys(self, key_pattern):
-        return self._cache.find_cache_keys(key_pattern)
-
-    def delete_cache(self, key_pattern):
-        return self._cache.delete_cache(key_pattern)
-
-    def clean_cache(self):
-        return self._cache.clean_cache()
-
-    def get_cache(self, key):
-        return self._cache.get_cache(key)
-
-    def find_by_dict(self, dict: dict):
-        raise NotImplementedError
-
-    def get_collection_manager(self):
+    def set_cache(self, key: str, values: List[Dict], expire: int = 0, cache_db: int = 0, chunk_size: int = 10000):
         pass
 
+    def get_cache(self, key: str) -> List[Dict]:
+        pass
+
+    def find_cache_keys(self, key_pattern: str) -> List[str]:
+        pass
+
+    def delete_cache(self, key_pattern: str):
+        pass
+
+    def clean_cache(self):
+        pass

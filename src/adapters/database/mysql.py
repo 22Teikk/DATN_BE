@@ -7,7 +7,6 @@ class MySQL:
     def __init__(self):
         try:
             self.engine = create_engine("mysql+pymysql://root:kietnt@94.237.64.46:3306/datn")
-            
             Session = sessionmaker(bind=self.engine)
             self.session = Session()
 
@@ -15,6 +14,9 @@ class MySQL:
         except Exception as e:
             print(">>> Không thể kết nối tới MySQL.", e)
             exit(1)
+
+    def get_session(self):
+        return self.session
 
     def get_table(self, table_name, model: type):
         meta = MetaData()
