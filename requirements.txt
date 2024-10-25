@@ -8,3 +8,5 @@ pytest
 redis
 flask-restx
 numpy
+sqlalchemy
+pymysql
