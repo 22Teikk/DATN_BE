@@ -4,7 +4,7 @@ from pymongo import MongoClient
 
 class MongoDB:
     def __init__(self):
-        mongo_uri = f"mongodb://localhost:27017"
+        mongo_uri = f"mongodb://94.237.64.46:27017"
         self.client = MongoClient(mongo_uri)
         self.db = self.client['DATN']
         try:

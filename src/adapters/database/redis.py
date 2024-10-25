@@ -6,7 +6,7 @@ import redis
 class Redis:
     def __init__(self):
 
-        redis_host = "localhost"
+        redis_host = "94.237.64.46"
         redis_port = "6379"
         redis_db = "0"
 

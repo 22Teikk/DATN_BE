@@ -1,9 +1,11 @@
 from datetime import datetime
 import uuid
 from flask_restx import fields as restx_fields
+from sqlalchemy.ext.declarative import declarative_base
 from marshmallow import Schema, fields
 import hashlib
 
+Base = declarative_base()
 
 def get_current_timestamp_str():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")

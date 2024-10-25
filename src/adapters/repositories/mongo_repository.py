@@ -101,3 +101,7 @@ class MongoRepository(EntityRepository):
 
     def get_cache(self, key: str) -> list[dict]:
         return self._cache.get_cache(key)
+
+
+    def create_index(self, field: str):
+        return self._collection.create_index([(field, 1)])

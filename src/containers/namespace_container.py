@@ -1,12 +1,13 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
-
+from src.adapters.api.namespace.categories_namespace import CategoriesNamespace
+from src.containers.categories_container import CategoriesContainer
+from src.domain.schemas.categories_schema import CategoriesSchema
 from src.adapters.api.namespace.entity_namespace import EntityNamespace
 from src.containers.entity_container import EntityContainer
 from src.containers.repository_container import RepositoryContainer
 from src.domain.schemas.entity_schema import EntitySchema
-
 
 
 class NamespaceContainer:
@@ -48,4 +49,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="entities",
             entity_name="Entity",
+        )
+        CategoriesNamespace(
+            container=CategoriesContainer(self.repository_container),
+            schema=CategoriesSchema(),
+            api=self.api,
+            namespace_name="categories",
+            entity_name="Category",
         )
