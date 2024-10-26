@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:9.1.0
+    container_name: datb-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: kietnt
+      MYSQL_DATABASE: datn
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql  # Lưu dữ liệu của MySQL
+    restart: always
+    networks:
+      - flask_network
+
+  redis:
+    image: redis:7.4.1
+    container_name: datn-redis
+    ports:
+      - "6379:6379"  # Map cổng Redis của host tới container
+    restart: always
+    networks:
+      - flask_network
+
+  flask_app:
+    build:
+      context: .  # Đường dẫn đến thư mục chứa Dockerfile của ứng dụng Flask
+      dockerfile: Dockerfile  # Dockerfile của ứng dụng Flask
+    container_name: flask_app
+    ports:
+      - "5000:5000"  # Map cổng 5000 của máy host tới cổng 5000 của container
+    depends_on:
+      - mysql
+      - redis
+    restart: on-failure
+    networks:
+      - flask_network
+
+networks:
+  flask_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
