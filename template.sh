@@ -46,8 +46,8 @@ from src.domain.entities.utils import Base
 
 class ${object_name_upper}(Base):
     __tablename__ = '${object_name_upper}'
-    def __init__(self, _id: str):
     _id = Column(String(length=36) ,primary_key=True)
+    def __init__(self, _id: str):
         self._id = _id
     " >>  src/domain/entities/${object_name}.py
 

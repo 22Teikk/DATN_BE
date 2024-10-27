@@ -8,10 +8,11 @@ from sqlalchemy.exc import IntegrityError
 from src.adapters.repositories.entity_repository import EntityRepository
 
 class MySQLRepository(EntityRepository):
-    def __init__(self, session: Session, table: Table, cache):
+    def __init__(self, session: Session, table: Table, cache, schema):
         self.session = session
         self.table = table
         self._cache = cache
+        self.schema = schema
 
     def find_by_query(self, query: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
         """Tìm kiếm bản ghi theo truy vấn."""
@@ -24,7 +25,8 @@ class MySQLRepository(EntityRepository):
     def find_by_id(self, _id: Any) -> Dict[str, Any]:
         """Tìm kiếm bản ghi theo ID."""
         print(">>>>>>> Find By ID " + str(_id))
-        return self.session.query(self.table).filter_by(_id=_id).first()
+
+        return self.schema.dump(self.session.query(self.table).filter_by(_id=_id).first())
 
     def insert(self, data: Dict[str, Any]) -> int:
         """Chèn một bản ghi mới vào bảng."""
