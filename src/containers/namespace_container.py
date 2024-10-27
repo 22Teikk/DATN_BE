@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.discount_namespace import DiscountNamespace
+from src.containers.discount_container import DiscountContainer
+from src.domain.schemas.discount_schema import DiscountSchema
 from src.adapters.api.namespace.category_namespace import CategoryNamespace
 from src.containers.category_container import CategoryContainer
 from src.domain.schemas.category_schema import CategorySchema
@@ -56,4 +59,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="categories",
             entity_name="Category",
+        )
+        DiscountNamespace(
+            container=DiscountContainer(self.repository_container),
+            schema=DiscountSchema(),
+            api=self.api,
+            namespace_name="discounts",
+            entity_name="Discount",
         )
