@@ -40,12 +40,15 @@ if [ "$option" == "-c" ]; then
     echo "Created  src/domain/entities/${object_name}.py"
 
     echo "
-from src.domain.entities.entity import Entity
+from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy.orm import relationship
+from src.domain.entities.utils import Base
 
-class ${object_name_upper}(Entity):
-    __tablename__ = '${object_name}'
+class ${object_name_upper}(Base):
+    __tablename__ = '${object_name_upper}'
     def __init__(self, _id: str):
-        super().__init__(_id)
+    _id = Column(String(length=36) ,primary_key=True)
+        self._id = _id
     " >>  src/domain/entities/${object_name}.py
 
     # tạo usecase
@@ -68,7 +71,7 @@ class ${object_name_upper}Usecase(EntityUsecase):
 from marshmallow import Schema, fields
 
 class ${object_name_upper}Schema(Schema):
-    _id = fields.Str(required=True, metadata={"description": "Category ID"})
+    _id = fields.Str(required=True, metadata={"description": "{object_name_upper} ID"})
 
     " >>  src/domain/schemas/${object_name}_schema.py
 
@@ -161,14 +164,13 @@ EOF
 
 
     # tạo test api
-    touch tests/apis/test_${object_name}.py
+    touch tests/apis/test_${object_name}_api.py
     echo "Created tests/apis/test_${object_name}.py"
 
 
 cat << EOF >> tests/apis/test_${object_name}.py 
 import os
 from src.domain.entities.utils import get_current_timestamp_str
-from src.domain.entities.cost import *
 from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.${object_name}_container import ${object_name_upper}Container
 import requests
@@ -211,21 +213,6 @@ EOF
 
     echo "Create $object_name_upper done"
 
-
-    # tạo test repository
-    mkdir -p tests/repositories
-    touch tests/repositories/test_${object_name}_repository.py
-    echo "Created tests/repositories/test_${object_name}_repository.py"
-
-    cat << EOF >> tests/repositories/test_${object_name}_repository.py 
-from src.domain.entities.utils import get_current_timestamp_str
-from src.domain.schemas.${object_name}_schema import ${object_name_upper}Schema
-from src.adapters.repositories.${object_name}_repository import ${object_name_upper}Repository
-
-def test_${object_name}_repository():
-    ${object_name}_repository = ${object_name_upper}Repository()
-    assert ${object_name}_repository is not None
-EOF
     exit 0
 fi
 if [ "$option" == "-d" ]; then

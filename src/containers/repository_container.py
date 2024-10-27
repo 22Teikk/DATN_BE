@@ -1,5 +1,6 @@
 import os
 
+from src.domain.entities.discount import Discount
 from src.domain.entities.category import Category
 from src.domain.entities.entity import Entity
 from src.adapters.repositories.mysql_repository import MySQLRepository
@@ -33,4 +34,7 @@ class RepositoryContainer:
 
         self.category_repository = MySQLRepository(
             self.sqldb.get_session(),self.sqldb.get_table(Category.__tablename__, Category), self._cache
+        )
+        self.discount_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Discount.__tablename__, Discount), self._cache
         )
