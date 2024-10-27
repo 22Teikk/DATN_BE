@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.product_namespace import ProductNamespace
+from src.containers.product_container import ProductContainer
+from src.domain.schemas.product_schema import ProductSchema
 from src.adapters.api.namespace.discount_namespace import DiscountNamespace
 from src.containers.discount_container import DiscountContainer
 from src.domain.schemas.discount_schema import DiscountSchema
@@ -66,4 +69,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="discounts",
             entity_name="Discount",
+        )
+        ProductNamespace(
+            container=ProductContainer(self.repository_container),
+            schema=ProductSchema(),
+            api=self.api,
+            namespace_name="products",
+            entity_name="Product",
         )
