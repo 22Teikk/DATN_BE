@@ -95,7 +95,6 @@ def test_product_container():
             "category": value2
         })
 
-    # Kiểm tra kết quả
     for item in data_list:
         print("Product:", item["product"].name)
         print("Category:", item["category"].name)
