@@ -1,5 +1,5 @@
 from src.domain.services.entity_service import EntityService
-
+from sqlalchemy.orm import Session
 
 class EntityUsecase:
     def __init__(self, service: EntityService):
@@ -53,3 +53,6 @@ class EntityUsecase:
 
     def clean_cache(self):
         return self.service.clean_cache()
+
+    def get_session_manager(self) -> Session:
+        return self.service.get_session_manager()

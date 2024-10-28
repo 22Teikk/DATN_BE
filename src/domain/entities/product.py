@@ -4,7 +4,7 @@ from src.domain.entities.utils import Base
 
 class Product(Base):
     __tablename__ = 'Product'  # Tên bảng trong cơ sở dữ liệu
-
+    __back_populates__ = 'products'  # Tên trư��ng liên kết với bảng products
     # Các trường của bảng products
     _id = Column(String(length=36), primary_key=True, nullable=False)  # ID sản phẩm
     name = Column(String(length=100), nullable=False)  # Tên sản phẩm
@@ -21,8 +21,8 @@ class Product(Base):
 
     # Quan hệ với bảng feedback, categories và discounts
     # feedback = relationship("Feedback", back_populates="products")  # Liên kết với bảng Feedback
-    category = relationship("Category", back_populates="products")  # Liên kết với bảng Category
-    discount = relationship("Discount", back_populates="products")  # Liên kết với bảng Discount
+    categories = relationship("Category", back_populates=__back_populates__)  # Liên kết với bảng Category
+    discounts = relationship("Discount", back_populates=__back_populates__)  # Liên kết với bảng Discount
 
     def __init__(self, _id: str, name: str, description: str, price: float,
         quantity_sold: int, is_sold: bool, total_time: int,

@@ -1,7 +1,12 @@
+from sqlalchemy import Row
+from src.domain.schemas.category_schema import CategorySchema
+from src.domain.entities.category import Category
+from src.domain.entities.product import Product
 from src.containers.product_container import ProductContainer
 from src.containers.repository_container import RepositoryContainer
 from src.domain.entities.utils import get_new_uuid
 from src.domain.schemas.product_schema import ProductSchema
+from sqlalchemy.orm import object_mapper
 
 
 def test_product_container():
@@ -66,3 +71,14 @@ def test_product_container():
     # Lấy tất cả sản phẩm và in ra
     products = container.usecase.find_by_query()
     print(products)
+
+    session = container.usecase.get_session_manager()
+    result : Row = session.query(Product, Category).join(Category, Product.category_id == Category._id).first()
+    value1 = Product(**ProductSchema().load(to_dict(result[0])))
+    value2 = Category(**CategorySchema().load(to_dict(result[1])))
+
+    print(">>>>>>>>>>>>>>>>>>>>>>: ",  type(value1))
+    print(">>>>>>>>>>>>>>>>>>>>>>: ",  value2.name)
+
+def to_dict(obj):
+    return {col.key: getattr(obj, col.key) for col in object_mapper(obj).columns}

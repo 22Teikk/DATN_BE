@@ -130,3 +130,7 @@ class MySQLRepository(EntityRepository):
 
     def clean_cache(self):
         pass
+
+    def get_session_manager(self):
+        return self.session 
+

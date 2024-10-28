@@ -55,3 +55,6 @@ class EntityServiceImpl(EntityService):
 
     def get_collection_manager(self):
         return self.entity_repository.get_collection_manager()
+
+    def get_session_manager(self):
+        return self.entity_repository.get_session_manager()
