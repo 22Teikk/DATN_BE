@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, send_from_directory
-from config import AUTHENTICATION_KEY
+from config import Config
 from src.domain.entities.utils import get_new_uuid
 
 
@@ -21,7 +21,7 @@ class RouteContainer:
     def require_auth(self, f):
         def decorator(*args, **kwargs):
             auth_key = request.headers.get("Auth-Key")
-            if auth_key != AUTHENTICATION_KEY:
+            if auth_key != Config.AUTHENTICATION_KEY:
                 return {"error": "Unauthorized"}, 401
             return f(*args, **kwargs)
 

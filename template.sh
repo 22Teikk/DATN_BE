@@ -71,7 +71,7 @@ class ${object_name_upper}Usecase(EntityUsecase):
 from marshmallow import Schema, fields
 
 class ${object_name_upper}Schema(Schema):
-    _id = fields.Str(required=True, metadata={"description": "{object_name_upper} ID"})
+    _id = fields.Str(required=True, metadata={"description": "${object_name_upper} ID"})
 
     " >>  src/domain/schemas/${object_name}_schema.py
 
@@ -165,10 +165,10 @@ EOF
 
     # tạo test api
     touch tests/apis/test_${object_name}_api.py
-    echo "Created tests/apis/test_${object_name}.py"
+    echo "Created tests/apis/test_${object_name}_api.py"
 
 
-cat << EOF >> tests/apis/test_${object_name}.py 
+cat << EOF >> tests/apis/test_${object_name}_api.py 
 import os
 from src.domain.entities.utils import get_current_timestamp_str
 from src.domain.schemas.entity_schema import EntitySchema
@@ -180,10 +180,9 @@ import pytest
 def host():
     return os.getenv("APP_HOST")
 
-
 @pytest.fixture(scope="module")
 def endpoint(host):
-    return f"{host}/api/v1/${object_name}/"
+    return f"{host}/api/v1/${object_name}s"
 
 
 def test_${object_name}_api(host, endpoint):
@@ -196,10 +195,10 @@ EOF
 
 
     # tạo test container
-    touch tests/containers/test_${object_name}_container.py
+    touch tests/container/test_${object_name}_container.py
     echo "Created tests/containers/test_${object_name}_container.py"
 
-cat << EOF >> tests/containers/test_${object_name}_container.py 
+cat << EOF >> tests/container/test_${object_name}_container.py 
 from src.containers.repository_container import RepositoryContainer
 from src.domain.entities.utils import get_current_timestamp_str
 from src.domain.schemas.${object_name}_schema import ${object_name_upper}Schema
@@ -241,12 +240,12 @@ if [ "$option" == "-d" ]; then
         echo "Delete src/adapters/services/${object_name}_service_impl.py"
         rm -rf src/containers/${object_name}_container.py
         echo "Delete src/containers/${object_name}_container.py"
-        rm -rf src/adapters/api/resources/${object_name}_resource.py
-        echo "Delete src/adapters/api/resources/${object_name}_resource.py"
-        rm -rf tests/apis/test_${object_name}.py
+        rm -rf src/adapters/api/namespace/${object_name}_namespace.py
+        echo "Delete src/adapters/api/namespace/${object_name}_namespace.py"
+        rm -rf tests/apis/test_${object_name}_api.py
         echo "Delete tests/apis/test_${object_name}.py"
-        rm -rf tests/containers/test_${object_name}_container.py
-        echo "Delete tests/containers/test_${object_name}_container.py"
+        rm -rf tests/container/test_${object_name}_container.py
+        echo "Delete tests/container/test_${object_name}_container.py"
 
         rm -rf tests/repositories/test_${object_name}_repository.py
         echo "Delete tests/repositories/test_${object_name}_repository.py"

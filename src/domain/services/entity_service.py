@@ -11,10 +11,6 @@ class EntityService(ABC):
         pass
 
     @abstractmethod
-    def find_by_dict(self, dict: dict):
-        pass
-
-    @abstractmethod
     def upserts(self, datas) -> dict:
         pass
 

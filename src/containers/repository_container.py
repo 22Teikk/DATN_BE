@@ -1,5 +1,6 @@
 import os
 
+from src.domain.entities.role import Role
 from src.domain.schemas.category_schema import CategorySchema
 from src.domain.schemas.discount_schema import DiscountSchema
 from src.domain.schemas.entity_schema import EntitySchema
@@ -45,4 +46,7 @@ class RepositoryContainer:
         )
         self.product_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Product.__tablename__, Product), self._cache, ProductSchema()
+        )
+        self.role_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Role.__tablename__, Role), self._cache, CategorySchema()
         )

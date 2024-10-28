@@ -1,12 +1,13 @@
 from sqlalchemy import Column, Integer, String, create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import NoSuchTableError
+from config import Config
 from src.domain.entities.utils import Base
 
 class MySQL:
     def __init__(self):
         try:
-            self.engine = create_engine("mysql+pymysql://root:kietnt@94.237.64.46:3306/datn")
+            self.engine = create_engine(f"mysql+pymysql://{Config.MYSQL_USERNAME}:{Config.MYSQL_PASSWORD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.MYSQL_DB}")
             Session = sessionmaker(bind=self.engine)
             self.session = Session()
 

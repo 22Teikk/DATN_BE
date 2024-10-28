@@ -97,3 +97,8 @@ def test_product_container():
     for item in data_list:
         print("Product:", item["product"].name)
         print("Category:", item["category"].name)
+
+    # Quick
+    temp = session.query(Product).first()
+    print("Come here")
+    print("temp: ", temp.categories.name)

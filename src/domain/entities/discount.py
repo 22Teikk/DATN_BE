@@ -17,7 +17,7 @@ class Discount(Base):
         self._id = _id
         self.code = code
         self.discount_percent = discount_percent
-        self.start_date = start_date or datetime.datetime.utcnow()
-        self.end_date = end_date or datetime.datetime.utcnow()
+        self.start_date = start_date if isinstance(start_date, datetime.datetime) else datetime.datetime.fromisoformat(start_date)
+        self.end_date = end_date if isinstance(end_date, datetime.datetime) else datetime.datetime.fromisoformat(end_date)
         self.is_active = is_active
 

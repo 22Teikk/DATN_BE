@@ -1,5 +1,4 @@
-import os
-from config import AUTHENTICATION_KEY
+from config import Config
 from src.domain.entities.utils import schema_to_restx_model
 from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.entity_container import EntityContainer
@@ -17,6 +16,7 @@ class EntityNamespace:
         entity_name: str,
     ):
         self.container = container
+        self.schema = schema
         model = schema_to_restx_model(schema, entity_name, api)
 
         namespace = api.namespace(
@@ -34,7 +34,7 @@ class EntityNamespace:
             def get(self):
                 auth_user = request.headers.get("Authorization")
                 print(auth_user)
-                if auth_user == AUTHENTICATION_KEY:
+                if auth_user == Config.AUTHENTICATION_KEY:
                     items = container.usecase.find_by_query()
                     if items:
                         results = schema.dump(items, many=True)
@@ -79,6 +79,7 @@ class EntityNamespace:
                     item = container.usecase.find_by_id(_id)
                     if not item:
                         return {"error": "Item not found"}, 404
+                    print(">>>>>>>>> Item: ", item)
                     return schema.dump(item), 200
                 return {"error": "Item not found"}, 404
 
