@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.user_profile import UserProfile
+from src.domain.schemas.user_profile_schema import UserProfileSchema
 from src.domain.entities.payment import Payment
 from src.domain.schemas.payment_schema import PaymentSchema
 from src.domain.entities.payment_method import PaymentMethod
@@ -59,4 +61,7 @@ class RepositoryContainer:
         )
         self.payment_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Payment.__tablename__, Payment), self._cache, PaymentSchema()
+        )
+        self.user_profile_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(UserProfile.__tablename__, UserProfile), self._cache, UserProfileSchema()
         )

@@ -116,7 +116,6 @@ class EntityNamespace:
                 if result == 0:
                     return {"error": "Item not found"}, 404
                 else: 
-                    print(">>>>>>>>>>>>>>>>>>>>>>>>" + "Come here !!")
                     return {"message": "Item deleted"}, 204
 
         self.entity_list = EntityList

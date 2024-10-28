@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.user_profile_namespace import UserProfileNamespace
+from src.containers.user_profile_container import UserProfileContainer
+from src.domain.schemas.user_profile_schema import UserProfileSchema
 from src.adapters.api.namespace.payment_namespace import PaymentNamespace
 from src.containers.payment_container import PaymentContainer
 from src.domain.schemas.payment_schema import PaymentSchema
@@ -106,4 +109,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="payments",
             entity_name="Payment",
+        )
+        UserProfileNamespace(
+            container=UserProfileContainer(self.repository_container),
+            schema=UserProfileSchema(),
+            api=self.api,
+            namespace_name="user_profiles",
+            entity_name="UserProfile",
         )
