@@ -47,9 +47,7 @@ class MySQLRepository(EntityRepository):
     def update(self, data: Dict[str, Any]) -> int:
         """Cập nhật bản ghi đã tồn tại."""
         try:
-            test = self.session.query(self.table).filter_by(_id = data.get('_id')).first()
-            print(">>>>>>>> Update " + str(test))
-            # .update(data)
+            self.session.query(self.table).filter_by(_id=data['_id']).update(data)
             self.session.commit()
             return data['_id']
         except Exception as e:
@@ -107,6 +105,10 @@ class MySQLRepository(EntityRepository):
     # Cache methods
     def get_cache_manager(self):
         return self._cache
+
+    def find_by_dict(self, dict: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Tìm kiếm bản ghi theo từ điển."""
+        return self.session.query(self.table).filter_by(**dict).all()
 
     def get_table_manager(self):
         """Lấy quản lý bảng (session hoặc table)."""

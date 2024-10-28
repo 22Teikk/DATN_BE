@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.payment import Payment
+from src.domain.schemas.payment_schema import PaymentSchema
 from src.domain.entities.payment_method import PaymentMethod
 from src.domain.schemas.payment_method_schema import PaymentMethodSchema
 from src.domain.entities.role import Role
@@ -54,4 +56,7 @@ class RepositoryContainer:
         )
         self.payment_method_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(PaymentMethod.__tablename__, PaymentMethod), self._cache, PaymentMethodSchema()
+        )
+        self.payment_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Payment.__tablename__, Payment), self._cache, PaymentSchema()
         )
