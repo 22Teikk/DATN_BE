@@ -18,12 +18,12 @@ class UserProfile(Base):
     long = Column(Float, nullable=False)
     email = Column(String(length=255), unique=True, nullable=False)
     phone = Column(String(length=255), nullable=False)
-    image_id = Column(String(length=36),
-                    #    ForeignKey('Image._id'),
+    image_url = Column(String(length=100),
                         nullable=True)
     created_at = Column(DateTime(), nullable=False)
+    store_id = Column(String(length=36), ForeignKey('Store._id'), nullable=True)
     roles = relationship("Role", back_populates=__back_populates__)
-    # images = relationship("Image", back_populates=__back_populates__)
+    stores = relationship("Store", back_populates=__back_populates__)
     def __init__(
         self, 
         _id: str,
@@ -37,8 +37,9 @@ class UserProfile(Base):
         long: float,
         email: str,
         phone: str,
-        image_id: str = None,
+        image_url: str = None,
         created_at: datetime.datetime = None,
+        store_id: str = None,
         ):
         self._id = _id
         self.name = name
@@ -51,5 +52,6 @@ class UserProfile(Base):
         self.long = long
         self.email = email
         self.phone = phone
-        self.image_id = image_id if image_id else None
+        self.image_url = image_url if image_url else None
         self.created_at = created_at if isinstance(created_at, datetime.datetime) else datetime.datetime.fromisoformat(created_at) 
+        self.store_id = store_id if store_id else None

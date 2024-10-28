@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.store import Store
+from src.domain.schemas.store_schema import StoreSchema
 from src.domain.entities.user_profile import UserProfile
 from src.domain.schemas.user_profile_schema import UserProfileSchema
 from src.domain.entities.payment import Payment
@@ -64,4 +66,7 @@ class RepositoryContainer:
         )
         self.user_profile_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(UserProfile.__tablename__, UserProfile), self._cache, UserProfileSchema()
+        )
+        self.store_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Store.__tablename__, Store), self._cache, StoreSchema()
         )

@@ -8,6 +8,7 @@ class PaymentMethod(Base):
     __back_populates__ = 'payment_methods'
     _id = Column(String(length=36) ,primary_key=True)
     name = Column(String(length=255), nullable=False)
+    payments = relationship("Payment", back_populates=__back_populates__)
     def __init__(self, _id: str, name: str):
         self._id = _id
         self.name = name

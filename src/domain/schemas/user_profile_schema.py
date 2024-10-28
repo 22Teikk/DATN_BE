@@ -13,5 +13,6 @@ class UserProfileSchema(Schema):
     long = fields.Float(required=True, metadata={"description": "Longitude of the user"})
     email = fields.Email(required=True, metadata={"description": "Email of the user"})
     phone = fields.Str(required=True, metadata={"description": "Phone number of the user"})
-    image_id = fields.Str(required=False, allow_none=True, metadata={"description": "Image ID of the user"})
+    image_url = fields.Str(required=False, allow_none=True, metadata={"description": "Image src of the user"})
     created_at = fields.DateTime(required=False, metadata={"description": "Creation date of the user"})
+    store_id = fields.Str(required=False, allow_none=True, metadata={"description": "Store ID of the user"})

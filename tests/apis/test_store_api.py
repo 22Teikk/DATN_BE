@@ -1,7 +1,7 @@
 import os
 from src.domain.entities.utils import get_current_timestamp_str
 from src.domain.schemas.entity_schema import EntitySchema
-from src.containers.user_profile_container import UserProfileContainer
+from src.containers.store_container import StoreContainer
 import requests
 import pytest
 
@@ -11,12 +11,11 @@ def host():
 
 @pytest.fixture(scope="module")
 def endpoint(host):
-    return f"{host}/api/v1/user_profiles"
+    return f"{host}/api/v1/stores"
 
 
-def test_user_profile_api(host, endpoint):
+def test_store_api(host, endpoint):
     headers = {"Content-Type": "application/json"}
-    _id = "string"
+    _id = "1"
 
-    data = requests.get(f"{endpoint}/{_id}", headers=headers).json()
-    print(data)
+    data = {"_id": _id, "created_at": get_current_timestamp_str()}

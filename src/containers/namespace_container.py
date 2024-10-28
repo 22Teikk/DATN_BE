@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.store_namespace import StoreNamespace
+from src.containers.store_container import StoreContainer
+from src.domain.schemas.store_schema import StoreSchema
 from src.adapters.api.namespace.user_profile_namespace import UserProfileNamespace
 from src.containers.user_profile_container import UserProfileContainer
 from src.domain.schemas.user_profile_schema import UserProfileSchema
@@ -116,4 +119,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="user_profiles",
             entity_name="UserProfile",
+        )
+        StoreNamespace(
+            container=StoreContainer(self.repository_container),
+            schema=StoreSchema(),
+            api=self.api,
+            namespace_name="stores",
+            entity_name="Store",
         )
