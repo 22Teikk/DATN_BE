@@ -4,7 +4,7 @@ from src.domain.entities.category import Category
 from src.domain.entities.product import Product
 from src.containers.product_container import ProductContainer
 from src.containers.repository_container import RepositoryContainer
-from src.domain.entities.utils import get_new_uuid, to_dict
+from src.domain.entities.utils import get_new_uuid, obj_to_dict
 from src.domain.schemas.product_schema import ProductSchema
 
 
@@ -26,7 +26,7 @@ def test_product_container():
         "quantity_sold": 0,
         "is_sold": False,
         "total_time": 30,
-        "category_id": "1",  # Thay bằng ID danh mục thực tế
+        "category_id": "2bc9c171-d35e-4065-9a19-256b6ca6f303",  # Thay bằng ID danh mục thực tế
         "discount_id": None,  # Nếu có giảm giá, sử dụng ID thực tế
     })
     product_id = product_data.get("_id")
@@ -48,7 +48,7 @@ def test_product_container():
             "quantity_sold": 10,
             "is_sold": True,
             "total_time": 60,
-            "category_id": "0374dc8b-a5c1-4ebe-a5c7-a2be1375e080",  # Thay bằng ID danh mục thực tế
+            "category_id": "2bc9c171-d35e-4065-9a19-256b6ca6f303",  # Thay bằng ID danh mục thực tế
             "discount_id": None,  # Nếu có giảm giá, sử dụng ID thực tế
         })]
     )
@@ -74,8 +74,8 @@ def test_product_container():
     session = container.usecase.get_session_manager()
     # Dành cho việc lấy 1 đối tượng
     result : Row = session.query(Product, Category).join(Category, Product.category_id == Category._id).first()
-    value1 = Product(**ProductSchema().load(to_dict(result[0])))
-    value2 = Category(**CategorySchema().load(to_dict(result[1])))
+    value1 = Product(**ProductSchema().load(obj_to_dict(result[0])))
+    value2 = Category(**CategorySchema().load(obj_to_dict(result[1])))
 
     print(">>>>>>>>>>>>>>>>>>>>>>: ",  type(value1))
     print(">>>>>>>>>>>>>>>>>>>>>>: ",  value2.name)
@@ -86,8 +86,8 @@ def test_product_container():
     # Lưu danh sách các kết quả dưới dạng dictionary hoặc đối tượng
     data_list = []
     for product, category in results:
-        value1 = Product(**ProductSchema().load(to_dict(product)))
-        value2 = Category(**CategorySchema().load(to_dict(category)))
+        value1 = Product(**ProductSchema().load(obj_to_dict(product)))
+        value2 = Category(**CategorySchema().load(obj_to_dict(category)))
         
         data_list.append({
             "product": value1,

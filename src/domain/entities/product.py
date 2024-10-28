@@ -23,6 +23,7 @@ class Product(Base):
     # feedback = relationship("Feedback", back_populates="products")  # Liên kết với bảng Feedback
     categories = relationship("Category", back_populates=__back_populates__)  # Liên kết với bảng Category
     discounts = relationship("Discount", back_populates=__back_populates__)  # Liên kết với bảng Discount
+    wishlists = relationship("Wishlist", back_populates=__back_populates__)  # Liên kết với bảng Wishlist
 
     def __init__(self, _id: str, name: str, description: str, price: float,
         quantity_sold: int, is_sold: bool, total_time: int,
