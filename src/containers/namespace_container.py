@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.payment_method_namespace import PaymentMethodNamespace
+from src.containers.payment_method_container import PaymentMethodContainer
+from src.domain.schemas.payment_method_schema import PaymentMethodSchema
 from src.containers.role_container import RoleContainer
 from src.domain.schemas.role_schema import RoleSchema
 from src.adapters.api.namespace.role_namespace import RoleNamespace
@@ -86,4 +89,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="roles",
             entity_name="Role",
+        )
+        PaymentMethodNamespace(
+            container=PaymentMethodContainer(self.repository_container),
+            schema=PaymentMethodSchema(),
+            api=self.api,
+            namespace_name="payment_methods",
+            entity_name="PaymentMethod",
         )
