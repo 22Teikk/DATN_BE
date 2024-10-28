@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.cart import Cart
+from src.domain.schemas.cart_schema import CartSchema
 from src.domain.entities.wishlist import Wishlist
 from src.domain.schemas.wishlist_schema import WishlistSchema
 from src.domain.entities.store import Store
@@ -74,4 +76,7 @@ class RepositoryContainer:
         )
         self.wishlist_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Wishlist.__tablename__, Wishlist), self._cache, WishlistSchema()
+        )
+        self.cart_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Cart.__tablename__, Cart), self._cache, CartSchema()
         )

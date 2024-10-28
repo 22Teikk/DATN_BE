@@ -25,6 +25,7 @@ class UserProfile(Base):
     roles = relationship("Role", back_populates=__back_populates__)
     stores = relationship("Store", back_populates=__back_populates__)
     wishlists = relationship("Wishlist", back_populates=__back_populates__)
+    carts = relationship("Cart", back_populates=__back_populates__)
     def __init__(
         self, 
         _id: str,

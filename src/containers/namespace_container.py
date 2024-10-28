@@ -1,6 +1,12 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.cart_namespace import CartNamespace
+from src.adapters.api.namespace.wishlist_namespace import WishlistNamespace
+from src.containers.cart_container import CartContainer
+from src.containers.wishlist_container import WishlistContainer
+from src.domain.schemas.cart_schema import CartSchema
+from src.domain.schemas.wishlist_schema import WishlistSchema
 from src.adapters.api.namespace.store_namespace import StoreNamespace
 from src.containers.store_container import StoreContainer
 from src.domain.schemas.store_schema import StoreSchema
@@ -126,4 +132,18 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="stores",
             entity_name="Store",
+        )
+        WishlistNamespace(
+            container=WishlistContainer(self.repository_container),
+            schema=WishlistSchema(),
+            api=self.api,
+            namespace_name="wishlists",
+            entity_name="Wishlist",
+        )
+        CartNamespace(
+            container=CartContainer(self.repository_container),
+            schema=CartSchema(),
+            api=self.api,
+            namespace_name="carts",
+            entity_name="Cart"
         )
