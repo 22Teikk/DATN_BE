@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.containers.role_container import RoleContainer
+from src.domain.schemas.role_schema import RoleSchema
+from src.adapters.api.namespace.role_namespace import RoleNamespace
 from src.adapters.api.namespace.product_namespace import ProductNamespace
 from src.containers.product_container import ProductContainer
 from src.domain.schemas.product_schema import ProductSchema
@@ -76,4 +79,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="products",
             entity_name="Product",
+        )
+        RoleNamespace(
+            container=RoleContainer(self.repository_container),
+            schema=RoleSchema(),
+            api=self.api,
+            namespace_name="roles",
+            entity_name="Role",
         )

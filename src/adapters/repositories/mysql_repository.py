@@ -108,10 +108,6 @@ class MySQLRepository(EntityRepository):
     def get_cache_manager(self):
         return self._cache
 
-    def find_by_dict(self, dict: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Tìm kiếm bản ghi theo từ điển."""
-        return self.session.query(self.table).filter_by(**dict).all()
-
     def get_table_manager(self):
         """Lấy quản lý bảng (session hoặc table)."""
         return self.table

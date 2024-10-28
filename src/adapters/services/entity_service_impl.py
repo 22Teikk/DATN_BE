@@ -11,9 +11,6 @@ class EntityServiceImpl(EntityService):
     def find_by_query(self, query: dict = ...) -> list[dict]:
         return self.entity_repository.find_by_query(query)
 
-    def find_by_dict(self, dict: dict):
-        return self.entity_repository.find_by_dict(dict)
-
     def find_by_id(self, _id):
         return self.entity_repository.find_by_id(_id)
 
