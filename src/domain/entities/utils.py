@@ -2,8 +2,9 @@ from datetime import datetime
 import uuid
 from flask_restx import fields as restx_fields
 from sqlalchemy.ext.declarative import declarative_base
-from marshmallow import Schema, fields
+from marshmallow import fields
 import hashlib
+from sqlalchemy.orm import object_mapper
 
 Base = declarative_base()
 
@@ -20,6 +21,8 @@ def get_current_timestamp():
 def get_new_uuid():
     return str(uuid.uuid4())
 
+def to_dict(obj):
+    return {col.key: getattr(obj, col.key) for col in object_mapper(obj).columns}
 
 # Hàm chuyển đổi marshmallow fields thành flask-restx fields
 def schema_to_restx_model(schema, name="Model", api=None):

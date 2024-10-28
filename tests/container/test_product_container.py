@@ -4,9 +4,8 @@ from src.domain.entities.category import Category
 from src.domain.entities.product import Product
 from src.containers.product_container import ProductContainer
 from src.containers.repository_container import RepositoryContainer
-from src.domain.entities.utils import get_new_uuid
+from src.domain.entities.utils import get_new_uuid, to_dict
 from src.domain.schemas.product_schema import ProductSchema
-from sqlalchemy.orm import object_mapper
 
 
 def test_product_container():
@@ -98,6 +97,3 @@ def test_product_container():
     for item in data_list:
         print("Product:", item["product"].name)
         print("Category:", item["category"].name)
-
-def to_dict(obj):
-    return {col.key: getattr(obj, col.key) for col in object_mapper(obj).columns}
