@@ -52,5 +52,9 @@ class EntityRepository(EntityCache):
 
     @abstractmethod
     def get_table_manager(self):
-        """Lấy quản lý bảng (session hoặc table)."""
+        """Lấy quản lý bảng (table)."""
+        pass
+
+    @abstractmethod
+    def get_session_manager(self):
         pass

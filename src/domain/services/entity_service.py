@@ -72,3 +72,7 @@ class EntityService(ABC):
     @abstractmethod
     def get_collection_manager(self):
         pass
+
+    @abstractmethod
+    def get_session_manager(self):
+        pass
