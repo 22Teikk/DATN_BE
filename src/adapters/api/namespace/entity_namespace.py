@@ -115,7 +115,8 @@ class EntityNamespace:
                 result = container.usecase.delete(_id)
                 if result == 0:
                     return {"error": "Item not found"}, 404
-                return {"message": "Item deleted"}, 204
+                else: 
+                    return {"message": "Item deleted"}, 204
 
         self.entity_list = EntityList
         self.entity = Entity

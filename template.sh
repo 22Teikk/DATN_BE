@@ -200,14 +200,14 @@ EOF
 
 cat << EOF >> tests/container/test_${object_name}_container.py 
 from src.containers.repository_container import RepositoryContainer
-from src.domain.entities.utils import get_current_timestamp_str
+from src.domain.entities.utils import get_current_timestamp_str, get_new_uuid
 from src.domain.schemas.${object_name}_schema import ${object_name_upper}Schema
 from src.containers.${object_name}_container import ${object_name_upper}Container
 
 def test_${object_name}_container():
-    ${object_name}_container = ${object_name_upper}Container(RepositoryContainer())
+    container = ${object_name_upper}Container(RepositoryContainer())
 
-    assert ${object_name}_container.usecase is not None
+    assert container.usecase is not None
 EOF
 
     echo "Create $object_name_upper done"

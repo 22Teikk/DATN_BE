@@ -21,7 +21,7 @@ def get_current_timestamp():
 def get_new_uuid():
     return str(uuid.uuid4())
 
-def to_dict(obj):
+def obj_to_dict(obj):
     return {col.key: getattr(obj, col.key) for col in object_mapper(obj).columns}
 
 # Hàm chuyển đổi marshmallow fields thành flask-restx fields

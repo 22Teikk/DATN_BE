@@ -1,6 +1,24 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.cart_namespace import CartNamespace
+from src.adapters.api.namespace.wishlist_namespace import WishlistNamespace
+from src.containers.cart_container import CartContainer
+from src.containers.wishlist_container import WishlistContainer
+from src.domain.schemas.cart_schema import CartSchema
+from src.domain.schemas.wishlist_schema import WishlistSchema
+from src.adapters.api.namespace.store_namespace import StoreNamespace
+from src.containers.store_container import StoreContainer
+from src.domain.schemas.store_schema import StoreSchema
+from src.adapters.api.namespace.user_profile_namespace import UserProfileNamespace
+from src.containers.user_profile_container import UserProfileContainer
+from src.domain.schemas.user_profile_schema import UserProfileSchema
+from src.adapters.api.namespace.payment_namespace import PaymentNamespace
+from src.containers.payment_container import PaymentContainer
+from src.domain.schemas.payment_schema import PaymentSchema
+from src.adapters.api.namespace.payment_method_namespace import PaymentMethodNamespace
+from src.containers.payment_method_container import PaymentMethodContainer
+from src.domain.schemas.payment_method_schema import PaymentMethodSchema
 from src.containers.role_container import RoleContainer
 from src.domain.schemas.role_schema import RoleSchema
 from src.adapters.api.namespace.role_namespace import RoleNamespace
@@ -86,4 +104,46 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="roles",
             entity_name="Role",
+        )
+        PaymentMethodNamespace(
+            container=PaymentMethodContainer(self.repository_container),
+            schema=PaymentMethodSchema(),
+            api=self.api,
+            namespace_name="payment_methods",
+            entity_name="PaymentMethod",
+        )
+        PaymentNamespace(
+            container=PaymentContainer(self.repository_container),
+            schema=PaymentSchema(),
+            api=self.api,
+            namespace_name="payments",
+            entity_name="Payment",
+        )
+        UserProfileNamespace(
+            container=UserProfileContainer(self.repository_container),
+            schema=UserProfileSchema(),
+            api=self.api,
+            namespace_name="user_profiles",
+            entity_name="UserProfile",
+        )
+        StoreNamespace(
+            container=StoreContainer(self.repository_container),
+            schema=StoreSchema(),
+            api=self.api,
+            namespace_name="stores",
+            entity_name="Store",
+        )
+        WishlistNamespace(
+            container=WishlistContainer(self.repository_container),
+            schema=WishlistSchema(),
+            api=self.api,
+            namespace_name="wishlists",
+            entity_name="Wishlist",
+        )
+        CartNamespace(
+            container=CartContainer(self.repository_container),
+            schema=CartSchema(),
+            api=self.api,
+            namespace_name="carts",
+            entity_name="Cart"
         )
