@@ -8,7 +8,7 @@ class Role(Base):
     __back_populates__ = 'roles'
     _id = Column(String(length=36) ,primary_key=True)
     name = Column(String(length=255), nullable=False)
-    users = relationship("User", back_populates=__back_populates__)
+    # users = relationship("User", back_populates=__back_populates__)
     def __init__(
         self, 
         _id: str,

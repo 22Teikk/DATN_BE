@@ -16,7 +16,7 @@ def discount_endpoint(discount_host):
 
 @pytest.fixture(scope="module")
 def get_discount_id():
-    return "1"  # ID cho bản ghi giảm giá
+    return get_new_uuid()  # ID cho bản ghi giảm giá
 
 @pytest.fixture(scope="module")
 def discount_headers():
