@@ -10,9 +10,6 @@ class Product(Base):
     name = Column(String(length=100), nullable=False)  # Tên sản phẩm
     description = Column(String(length=200), nullable=False)  # Mô tả sản phẩm
     price = Column(DECIMAL(10, 2), nullable=False)  # Giá sản phẩm
-    feedback_id = Column(String(length=36)
-    # , ForeignKey('Feedback._id')
-    , nullable=True)  
     quantity_sold = Column(Integer, nullable=False)  # Số lượng đã bán
     is_sold = Column(Boolean, nullable=False)  # Trạng thái đã bán
     total_time = Column(Integer, nullable=False)  # Tổng thời gian (có thể hiểu là thời gian sản phẩm được bán)
@@ -20,7 +17,7 @@ class Product(Base):
     discount_id = Column(String(length=36), ForeignKey('Discount._id'), nullable=True)  # ID giảm giá, liên kết với bảng discounts
 
     # Quan hệ với bảng feedback, categories và discounts
-    # feedback = relationship("Feedback", back_populates="products")  # Liên kết với bảng Feedback
+    feedback = relationship("Feedback", back_populates=__back_populates__)  # Liên kết với bảng Feedback
     categories = relationship("Category", back_populates=__back_populates__)  # Liên kết với bảng Category
     discounts = relationship("Discount", back_populates=__back_populates__)  # Liên kết với bảng Discount
     wishlists = relationship("Wishlist", back_populates=__back_populates__)  # Liên kết với bảng Wishlist
@@ -36,6 +33,5 @@ class Product(Base):
         self.is_sold = is_sold
         self.total_time = total_time
         self.category_id = category_id
-        self.feedback_id = feedback_id
         self.discount_id = discount_id
 

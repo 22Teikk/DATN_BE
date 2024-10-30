@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.feedback_namespace import FeedbackNamespace
+from src.containers.feedback_container import FeedbackContainer
+from src.domain.schemas.feedback_schema import FeedbackSchema
 from src.adapters.api.namespace.cart_namespace import CartNamespace
 from src.adapters.api.namespace.wishlist_namespace import WishlistNamespace
 from src.containers.cart_container import CartContainer
@@ -146,4 +149,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="carts",
             entity_name="Cart"
+        )
+        FeedbackNamespace(
+            container=FeedbackContainer(self.repository_container),
+            schema=FeedbackSchema(),
+            api=self.api,
+            namespace_name="feedbacks",
+            entity_name="Feedback"
         )
