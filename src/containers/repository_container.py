@@ -1,5 +1,11 @@
 import os
 
+from src.domain.entities.order_item import OrderItem
+from src.domain.schemas.order_item_schema import OrderItemSchema
+from src.domain.entities.order import Order
+from src.domain.schemas.order_schema import OrderSchema
+from src.domain.entities.feedback import Feedback
+from src.domain.schemas.feedback_schema import FeedbackSchema
 from src.domain.entities.cart import Cart
 from src.domain.schemas.cart_schema import CartSchema
 from src.domain.entities.wishlist import Wishlist
@@ -79,4 +85,13 @@ class RepositoryContainer:
         )
         self.cart_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Cart.__tablename__, Cart), self._cache, CartSchema()
+        )
+        self.feedback_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Feedback.__tablename__, Feedback), self._cache, FeedbackSchema()
+        )
+        self.order_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Order.__tablename__, Order), self._cache, OrderSchema()
+        )
+        self.order_item_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(OrderItem.__tablename__, OrderItem), self._cache, OrderItemSchema()
         )

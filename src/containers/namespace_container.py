@@ -1,6 +1,16 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.auth_namespace import AuthNamespace
+from src.adapters.api.namespace.order_item_namespace import OrderItemNamespace
+from src.containers.order_item_container import OrderItemContainer
+from src.domain.schemas.order_item_schema import OrderItemSchema
+from src.adapters.api.namespace.order_namespace import OrderNamespace
+from src.containers.order_container import OrderContainer
+from src.domain.schemas.order_schema import OrderSchema
+from src.adapters.api.namespace.feedback_namespace import FeedbackNamespace
+from src.containers.feedback_container import FeedbackContainer
+from src.domain.schemas.feedback_schema import FeedbackSchema
 from src.adapters.api.namespace.cart_namespace import CartNamespace
 from src.adapters.api.namespace.wishlist_namespace import WishlistNamespace
 from src.containers.cart_container import CartContainer
@@ -146,4 +156,31 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="carts",
             entity_name="Cart"
+        )
+        FeedbackNamespace(
+            container=FeedbackContainer(self.repository_container),
+            schema=FeedbackSchema(),
+            api=self.api,
+            namespace_name="feedbacks",
+            entity_name="Feedback"
+        )
+        OrderNamespace(
+            container=OrderContainer(self.repository_container),
+            schema=OrderSchema(),
+            api=self.api,
+            namespace_name="orders",
+            entity_name="Order"
+        )
+        OrderItemNamespace(
+            container=OrderItemContainer(self.repository_container),
+            schema=OrderItemSchema(),
+            api=self.api,
+            namespace_name="order_items",
+            entity_name="OrderItem"
+        )
+        AuthNamespace(
+            api=self.api,
+            namespace_name="auth",
+            container=UserProfileContainer(self.repository_container),
+            schema=UserProfileSchema(),
         )

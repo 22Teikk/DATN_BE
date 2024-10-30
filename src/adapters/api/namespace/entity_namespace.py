@@ -1,10 +1,11 @@
+from flask_jwt_extended import jwt_required
 from config import Config
 from src.domain.entities.utils import schema_to_restx_model
 from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.entity_container import EntityContainer
 from flask import request
 from flask_restx import Api, Resource, ValidationError, fields
-
+from src.domain.entities.utils import get_new_uuid
 
 class EntityNamespace:
     def __init__(
@@ -31,8 +32,9 @@ class EntityNamespace:
             @namespace.response(200, f"{entity_name} retrieved")
             @namespace.response(404, f"{entity_name} not found")
             @namespace.response(401, "Unauthorized")
+            @jwt_required()
             def get(self):
-                auth_user = request.headers.get("Authorization")
+                auth_user = request.headers.get("Authentication-Admin")
                 print(auth_user)
                 if auth_user == Config.AUTHENTICATION_KEY:
                     items = container.usecase.find_by_query()
@@ -52,11 +54,14 @@ class EntityNamespace:
             @namespace.response(409, f"{entity_name} already exists")
             @namespace.response(404, f"{namespace_name} not found")
             @namespace.response(500, "Internal server error")
+            @jwt_required()
             def post(self):
                 data = request.get_json()
                 if data is None:
                     return {"error": "No input data provided"}, 400
                 try:
+                    data['_id'] = get_new_uuid()
+                    print(data['_id'])
                     valid_data = schema.load(data)
                 except Exception as err:
                     return {"error": err.messages}, 400
@@ -73,6 +78,7 @@ class EntityNamespace:
             @namespace.doc(f"get_{entity_name}")
             @namespace.response(200, f"{entity_name} retrieved")
             @namespace.response(404, f"{entity_name} not found")
+            @jwt_required()
             def get(self, _id=None):
                 if _id:
                     print(">>>>>>>ID: " + _id)
@@ -88,6 +94,7 @@ class EntityNamespace:
             @namespace.response(404, f"{entity_name} not found")
             @namespace.response(400, "Invalid input")
             @namespace.expect(model)
+            @jwt_required()
             def put(self, _id):
                 # Lấy dữ liệu JSON từ yêu cầu
 

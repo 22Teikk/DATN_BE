@@ -12,6 +12,7 @@ class Payment(Base):
     created_at = Column(DateTime(), nullable=False)
     payment_method_id = Column(String(length=36), ForeignKey('PaymentMethod._id'), nullable=False)
     payment_methods = relationship("PaymentMethod", back_populates=__back_populates__)
+    orders = relationship("Order", back_populates=__back_populates__)
     def __init__(
         self, 
         _id: str,
