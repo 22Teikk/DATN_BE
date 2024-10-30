@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.order_namespace import OrderNamespace
+from src.containers.order_container import OrderContainer
+from src.domain.schemas.order_schema import OrderSchema
 from src.adapters.api.namespace.feedback_namespace import FeedbackNamespace
 from src.containers.feedback_container import FeedbackContainer
 from src.domain.schemas.feedback_schema import FeedbackSchema
@@ -156,4 +159,11 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="feedbacks",
             entity_name="Feedback"
+        )
+        OrderNamespace(
+            container=OrderContainer(self.repository_container),
+            schema=OrderSchema(),
+            api=self.api,
+            namespace_name="orders",
+            entity_name="Order"
         )
