@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.order_item import OrderItem
+from src.domain.schemas.order_item_schema import OrderItemSchema
 from src.domain.entities.order import Order
 from src.domain.schemas.order_schema import OrderSchema
 from src.domain.entities.feedback import Feedback
@@ -89,4 +91,7 @@ class RepositoryContainer:
         )
         self.order_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Order.__tablename__, Order), self._cache, OrderSchema()
+        )
+        self.order_item_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(OrderItem.__tablename__, OrderItem), self._cache, OrderItemSchema()
         )
