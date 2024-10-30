@@ -18,7 +18,7 @@ class Order(Base):
     payment_id = Column(String(length=36), ForeignKey('Payment._id'))
     users = relationship("UserProfile", back_populates=__back_populates__)
     payments = relationship("Payment", back_populates=__back_populates__)
-
+    order_items = relationship("OrderItem", back_populates=__back_populates__)
     def __init__(
         self, 
         _id: str,

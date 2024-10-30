@@ -14,6 +14,7 @@ class MySQLRepository(EntityRepository):
         self._cache = cache
         self.schema = schema
 
+    # Return list Row
     def find_by_query(self, query: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
         """Tìm kiếm bản ghi theo truy vấn."""
         print(">>>>>>>> Find by query " + str(query))

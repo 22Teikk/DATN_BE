@@ -18,14 +18,6 @@ class RouteContainer:
     def uid(self):
         return get_new_uuid(), 200
 
-    def require_auth(self, f):
-        def decorator(*args, **kwargs):
-            auth_key = request.headers.get("Auth-Key")
-            if auth_key != Config.AUTHENTICATION_KEY:
-                return {"error": "Unauthorized"}, 401
-            return f(*args, **kwargs)
-
-        return decorator
 
     def protected_route(self):
         return {"message": "You have access to this route"}, 401

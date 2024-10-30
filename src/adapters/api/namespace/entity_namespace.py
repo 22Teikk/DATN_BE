@@ -4,7 +4,7 @@ from src.domain.schemas.entity_schema import EntitySchema
 from src.containers.entity_container import EntityContainer
 from flask import request
 from flask_restx import Api, Resource, ValidationError, fields
-
+from src.domain.entities.utils import get_new_uuid
 
 class EntityNamespace:
     def __init__(
@@ -32,7 +32,7 @@ class EntityNamespace:
             @namespace.response(404, f"{entity_name} not found")
             @namespace.response(401, "Unauthorized")
             def get(self):
-                auth_user = request.headers.get("Authorization")
+                auth_user = request.headers.get("Authentication-Admin")
                 print(auth_user)
                 if auth_user == Config.AUTHENTICATION_KEY:
                     items = container.usecase.find_by_query()
@@ -57,6 +57,8 @@ class EntityNamespace:
                 if data is None:
                     return {"error": "No input data provided"}, 400
                 try:
+                    data['_id'] = get_new_uuid()
+                    print(data['_id'])
                     valid_data = schema.load(data)
                 except Exception as err:
                     return {"error": err.messages}, 400
