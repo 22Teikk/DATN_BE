@@ -25,3 +25,4 @@ def test_categories_container():
         }
     ]
     container.usecase.upserts(data)
+    print("Upsert completed")
