@@ -25,16 +25,13 @@ services:
       - flask_network
 
   flask_app:
-    build:
-      context: .  # Đường dẫn đến thư mục chứa Dockerfile của ứng dụng Flask
-      dockerfile: Dockerfile  # Dockerfile của ứng dụng Flask
-    container_name: flask_app
+    image: datn-be
     ports:
-      - "5000:5000"  # Map cổng 5000 của máy host tới cổng 5000 của container
+      - "5001:5001"  
     depends_on:
       - mysql
       - redis
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - flask_network
 
