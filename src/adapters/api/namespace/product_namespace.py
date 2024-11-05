@@ -1,6 +1,8 @@
 from flask import request
 from flask_jwt_extended import jwt_required
 from flask_restx import Api, Resource
+from sqlalchemy import func
+from src.domain.entities.feedback import Feedback
 from src.domain.entities.product import Product
 from src.containers.product_container import ProductContainer
 from src.domain.schemas.product_schema import ProductSchema
@@ -30,13 +32,12 @@ class ProductNamespace(EntityNamespace):
             @self.namespace.response(401, "Unauthorized")
             @jwt_required()
             def get(self):
-                # Lấy tham số từ query
                 name = request.args.get("name")
                 category = request.args.get("category")
                 min_price = request.args.get("min_price", type=float)
                 max_price = request.args.get("max_price", type=float)
-                min_rating = request.args.get("min_rating", type=float)
-                max_rating = request.args.get("max_rating", type=float)
+                min_rating = request.args.get("min_rating", type=int)
+                max_rating = request.args.get("max_rating", type=int)
 
                 # Tạo dict chứa các tham số lọc
                 filters = {
@@ -50,9 +51,13 @@ class ProductNamespace(EntityNamespace):
 
                 # Loại bỏ các tham số có giá trị None
                 filters = {k: v for k, v in filters.items() if v is not None}
+                # Lấy tham số từ query
+                session = container.usecase.get_session_manager()
+                query = session.query(
+                    Product,
+                    func.avg(Feedback.star).label('avg_rating')
+                ).outerjoin(Feedback).group_by(Product._id)
 
-                # Lấy dữ liệu từ `usecase` với bộ lọc
-                query = container.usecase.get_session_manager().query(Product)
                 if "name" in filters:
                     query = query.filter(Product.name.ilike(f"%{filters['name']}%"))
                 if "category" in filters:
@@ -62,13 +67,15 @@ class ProductNamespace(EntityNamespace):
                 if "max_price" in filters:
                     query = query.filter(Product.price <= filters["max_price"])
                 if "min_rating" in filters:
-                    query = query.filter(Product.feedbacks >= filters["min_rating"])
+                    query = query.having(func.avg(Feedback.star) >= filters["min_rating"])
                 if "max_rating" in filters:
-                    query = query.filter(Product.feedbacks <= filters["max_rating"])
+                    query = query.having(func.avg(Feedback.star) <= filters["max_rating"])
 
                 list_data = query.all()
+
                 if list_data:
-                    results = schema.dump(list_data, many=True)
+                    # Serialize results, taking only Product part from each tuple in list_data
+                    results = schema.dump([product for product, _ in list_data], many=True)
                     return results, 200
                 else:
-                    return {"error": f"Item not found"}, 404
+                    return {"error": f"{entity_name} not found"}, 404
