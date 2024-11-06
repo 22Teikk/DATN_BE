@@ -180,7 +180,7 @@ class NamespaceContainer:
         )
         AuthNamespace(
             api=self.api,
-            namespace_name="auth",
+            namespace_name="user_profiles",
             container=UserProfileContainer(self.repository_container),
             schema=UserProfileSchema(),
         )
