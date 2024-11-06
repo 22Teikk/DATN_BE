@@ -37,4 +37,5 @@ class Product(Base):
         self.total_time = total_time
         self.category_id = category_id
         self.discount_id = discount_id
+        self.feedback_id = feedback_id
 
