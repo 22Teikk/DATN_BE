@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.image_namespace import ImageNamespace
+from src.containers.image_container import ImageContainer
+from src.domain.schemas.image_schema import ImageSchema
 from src.adapters.api.namespace.auth_namespace import AuthNamespace
 from src.adapters.api.namespace.order_item_namespace import OrderItemNamespace
 from src.containers.order_item_container import OrderItemContainer
@@ -183,4 +186,13 @@ class NamespaceContainer:
             namespace_name="user_profiles",
             container=UserProfileContainer(self.repository_container),
             schema=UserProfileSchema(),
+        )
+        ImageNamespace(
+            api=self.api,
+            feedback_container=FeedbackContainer(self.repository_container),
+            product_container=ProductContainer(self.repository_container),
+            namespace_name="images",
+            container=ImageContainer(self.repository_container),
+            schema=ImageSchema(),
+            entity_name="Image"
         )
