@@ -14,8 +14,8 @@ class UserProfile(Base):
     address = Column(String(length=255), nullable=False)
     description = Column(String(length=255), nullable=False)
     role_id = Column(String(length=36), ForeignKey('Role._id'), nullable=False)
-    lat = Column(Float, nullable=False)
-    long = Column(Float, nullable=False)
+    lat = Column(Float, nullable=True)
+    long = Column(Float, nullable=True)
     email = Column(String(length=255), unique=True, nullable=False)
     phone = Column(String(length=255), nullable=False)
     image_url = Column(String(length=100),
@@ -27,7 +27,7 @@ class UserProfile(Base):
     wishlists = relationship("Wishlist", back_populates=__back_populates__)
     carts = relationship("Cart", back_populates=__back_populates__)
     orders = relationship("Order", back_populates=__back_populates__)
-    feedbacks = relationship("Feedback", back_populates=__back_populates__)
+    feedbacks = relationship("Feedback", back_populates='users')
     def __init__(
         self, 
         _id: str,
@@ -37,10 +37,10 @@ class UserProfile(Base):
         address: str,
         description: str,
         role_id: str,
-        lat: float,
-        long: float,
         email: str,
         phone: str,
+        long: float = None,
+        lat: float = None,
         image_url: str = None,
         created_at: datetime.datetime = None,
         store_id: str = None,
