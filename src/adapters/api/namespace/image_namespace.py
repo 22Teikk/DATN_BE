@@ -25,7 +25,6 @@ class ImageNamespace(EntityNamespace):
         self.feedback_container = feedback_container
         self.product_container = product_container
         self.entity_list.post = self.custom_post
-        self.entity.get = self.custom_get
     def custom_post(self):
         response_data = []
         # File information json
@@ -53,16 +52,10 @@ class ImageNamespace(EntityNamespace):
         file_extension = os.path.splitext(file.filename)[1] 
         file_path = os.path.join(folder, id + file_extension)
         file.save(file_path)
-        url = Config.APP_HOST + "/api/v1/images/" + id + file_extension
+        url = Config.APP_HOST + "/files/" + id + file_extension
         image_file = Image(id, url)
         if feedback_id:
             image_file.feedback_id = feedback_id
         if product_id:
             image_file.product_id = product_id
         return image_file
-
-    def custom_get(self, _id):
-        print("custom_static", _id)
-        directory = os.path.join(os.getcwd(), "static")
-        print(os.getcwd())
-        return send_from_directory(directory, _id)
