@@ -17,14 +17,12 @@ class Product(Base):
     discount_id = Column(String(length=36), ForeignKey('Discount._id'), nullable=True)  # ID giảm giá, liên kết với bảng discounts
 
     # Quan hệ với bảng feedback, categories và discounts
-    feedback = relationship("Feedback", back_populates=__back_populates__)  # Liên kết với bảng Feedback
     categories = relationship("Category", back_populates=__back_populates__)  # Liên kết với bảng Category
     discounts = relationship("Discount", back_populates=__back_populates__)  # Liên kết với bảng Discount
     wishlists = relationship("Wishlist", back_populates=__back_populates__)  # Liên kết với bảng Wishlist
     carts = relationship("Cart", back_populates=__back_populates__)  # Liên kết với bảng Cart
     order_items = relationship("OrderItem", back_populates=__back_populates__)  # Liên kết với bảng OrderItem
     feedbacks = relationship("Feedback", back_populates=__back_populates__)  # Liên kết với bảng Feedback
-    images = relationship("Image", back_populates=__back_populates__)
     def __init__(self, _id: str, name: str, description: str, price: float,
         quantity_sold: int, is_sold: bool, total_time: int,
         category_id: str, feedback_id: str = None, discount_id: str = None):

@@ -1,5 +1,7 @@
 import os
 
+from src.domain.entities.image import Image
+from src.domain.schemas.image_schema import ImageSchema
 from src.domain.entities.order_item import OrderItem
 from src.domain.schemas.order_item_schema import OrderItemSchema
 from src.domain.entities.order import Order
@@ -94,4 +96,7 @@ class RepositoryContainer:
         )
         self.order_item_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(OrderItem.__tablename__, OrderItem), self._cache, OrderItemSchema()
+        )
+        self.image_repository = MySQLRepository(
+            self.sqldb.get_session(), self.sqldb.get_table(Image.__tablename__, Image), self._cache, ImageSchema()
         )
