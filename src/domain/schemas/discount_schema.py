@@ -7,3 +7,4 @@ class DiscountSchema(Schema):
     start_date = fields.DateTime(required=True, metadata={"description": "Discount start date"})
     end_date = fields.DateTime(required=True, metadata={"description": "Discount start date"})
     is_active = fields.Boolean(required=True, metadata={"description": "Is discount active"})
+    total = fields.Integer(required=True, metadata={"description": "Total discount "})

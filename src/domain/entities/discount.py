@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Float
 from sqlalchemy.orm import relationship
 from src.domain.entities.utils import Base
 
@@ -12,12 +12,13 @@ class Discount(Base):
     start_date = Column(DateTime(), nullable=False)
     end_date = Column(DateTime(), nullable=False)
     is_active = Column(Boolean, nullable=False)
+    total = Column(Integer, nullable=False)
     products = relationship("Product", back_populates=__back_populates__)
-    def __init__(self, _id: str, code: str, discount_percent: float, start_date: datetime.datetime = None, end_date: datetime.datetime = None, is_active: bool = True):
+    def __init__(self, _id: str, code: str, discount_percent: float, total: int, start_date: datetime.datetime = None, end_date: datetime.datetime = None, is_active: bool = True):
         self._id = _id
         self.code = code
         self.discount_percent = discount_percent
         self.start_date = start_date if isinstance(start_date, datetime.datetime) else datetime.datetime.fromisoformat(start_date)
         self.end_date = end_date if isinstance(end_date, datetime.datetime) else datetime.datetime.fromisoformat(end_date)
         self.is_active = is_active
-
+        self.total = total

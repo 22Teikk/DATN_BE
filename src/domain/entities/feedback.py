@@ -15,6 +15,7 @@ class Feedback(Base):
     user_id = Column(String(length=36), ForeignKey('User._id'))
     products = relationship("Product", back_populates=__back_populates__)
     users = relationship("UserProfile", back_populates='feedbacks')
+    images = relationship("Image", back_populates='feedbacks')
     def __init__(
         self, 
         _id: str,
