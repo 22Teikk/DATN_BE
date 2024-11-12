@@ -32,7 +32,7 @@ class EntityNamespace:
             @namespace.response(200, f"{entity_name} retrieved")
             @namespace.response(404, f"{entity_name} not found")
             @namespace.response(401, "Unauthorized")
-            @jwt_required()
+            # @jwt_required()
             def get(self):
                 auth_user = request.headers.get("Authentication-Admin")
                 print(auth_user)
@@ -54,7 +54,7 @@ class EntityNamespace:
             @namespace.response(409, f"{entity_name} already exists")
             @namespace.response(404, f"{namespace_name} not found")
             @namespace.response(500, "Internal server error")
-            @jwt_required()
+            # @jwt_required()
             def post(self):
                 data = request.get_json()
                 if data is None:
@@ -78,7 +78,7 @@ class EntityNamespace:
             @namespace.doc(f"get_{entity_name}")
             @namespace.response(200, f"{entity_name} retrieved")
             @namespace.response(404, f"{entity_name} not found")
-            @jwt_required()
+            # @jwt_required()
             def get(self, _id=None):
                 if _id:
                     print(">>>>>>>ID: " + _id)
@@ -94,7 +94,7 @@ class EntityNamespace:
             @namespace.response(404, f"{entity_name} not found")
             @namespace.response(400, "Invalid input")
             @namespace.expect(model)
-            @jwt_required()
+            # @jwt_required()
             def put(self, _id):
                 # Lấy dữ liệu JSON từ yêu cầu
 
