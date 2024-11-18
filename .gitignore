@@ -8,3 +8,5 @@
 *.env
 *.log
 static/*
+*.pyc
+__pycache__/
