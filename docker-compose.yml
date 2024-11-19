@@ -43,6 +43,8 @@ services:
       - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - flask_network
 
   flask_app:
     image: datn-be
