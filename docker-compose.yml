@@ -49,9 +49,9 @@ services:
     ports:
       - "5001:5001"  
     depends_on:
-      redis
-      mysql
-      mongo
+      - redis
+      - mysql
+      - mongo
     restart: unless-stopped
     networks:
       - flask_network
