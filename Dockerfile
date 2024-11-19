@@ -1,19 +1,20 @@
+# Sử dụng Python 3.11-alpine
 FROM python:3.11-alpine
 
-# Create and set the working directory
+# Đặt thư mục làm việc trong container
 WORKDIR /app
 
-# Copy only the requirements file first to leverage Docker caching
+# Sao chép file requirements.txt vào container
 COPY requirements.txt .
 
-# Install dependencies
+# Cài đặt các thư viện cần thiết
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire application code
+# Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
-# Expose the port your application will run on
+# Mở cổng 5001
 EXPOSE 5001
 
-# Specify the command to run on container start
+# Chạy ứng dụng Flask
 CMD ["python", "app.py"]

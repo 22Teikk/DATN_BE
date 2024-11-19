@@ -1,9 +1,22 @@
 version: '3.8'
 
 services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - mongo-data:/data/db
+
   mysql:
     image: mysql:9.1.0
-    container_name: datb-mysql
+    container_name: datn-mysql
     environment:
       MYSQL_ROOT_PASSWORD: kietnt
       MYSQL_DATABASE: datn
@@ -24,13 +37,29 @@ services:
     networks:
       - flask_network
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: kietnt
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
   flask_app:
     image: datn-be
     ports:
       - "5001:5001"  
     depends_on:
-      - mysql
-      - redis
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - flask_network
