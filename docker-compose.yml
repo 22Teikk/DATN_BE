@@ -13,7 +13,7 @@ services:
     image: mysql:9.1.0
     container_name: datn-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: datn
     ports:
       - "3306:3306"
