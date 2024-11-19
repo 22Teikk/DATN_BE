@@ -13,7 +13,7 @@ services:
     image: mysql:9.1.0
     container_name: datn-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: kietnt
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: datn
     ports:
       - "3306:3306"
@@ -37,8 +37,8 @@ services:
     container_name: phpmyadmin
     environment:
       PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: kietnt
+      PMA_USER: ${MYSQL_USERNAME}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "8080:80"
     depends_on:
@@ -50,6 +50,16 @@ services:
     image: datn-be
     ports:
       - "5001:5001"  
+    environment:
+      - MYSQL_USERNAME = ${MYSQL_USERNAME} 
+      - APP_HOST = ${APP_HOST} 
+      - MYSQL_PASSWORD = ${MYSQL_PASSWORD} 
+      - MYSQL_HOST = ${MYSQL_HOST} 
+      - MYSQL_PORT = ${MYSQL_PORT} 
+      - MYSQL_DB = ${MYSQL_DB} 
+      - AUTHENTICATION_KEY = ${AUTHENTICATION_KEY}
+      - JWT_SECRET_KEY = ${JWT_SECRET_KEY}
+      - JWT_TOKEN_LOCATION = ${JWT_TOKEN_LOCATION}
     depends_on:
       - redis
       - mysql
