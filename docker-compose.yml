@@ -6,11 +6,6 @@ services:
     container_name: mongo
     ports:
       - "27017:27017"
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
     volumes:
       - mongo-data:/data/db
 
@@ -48,18 +43,17 @@ services:
       - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - flask_network
 
   flask_app:
     image: datn-be
     ports:
       - "5001:5001"  
     depends_on:
-      redis:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
+      - redis
+      - mysql
+      - mongo
     restart: unless-stopped
     networks:
       - flask_network
@@ -70,3 +64,4 @@ networks:
 
 volumes:
   mysql_data:
+  mongo-data:
