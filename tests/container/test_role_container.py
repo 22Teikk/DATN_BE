@@ -8,15 +8,15 @@ def test_categories_container():
     assert container is not None
     data = [
         {
-            "_id": get_new_uuid(),
+            "_id": 1,
             "name": "Admin",
         },
         {
-            "_id": get_new_uuid(),
+            "_id": 2,
             "name": "Client",
         },
         {
-            "_id": get_new_uuid(),
+            "_id": 3,
             "name": "Employee",
         },
     ]

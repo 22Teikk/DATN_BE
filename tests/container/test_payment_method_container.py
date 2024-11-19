@@ -10,12 +10,12 @@ def test_payment_method_container():
     host = os.getenv('APP_HOST')
     data = [
         {
-            "_id": get_new_uuid(),
+            "_id": 1,
             "name": "COD",
             "image_url": f"{host}/files/bank_card.png"
         },
         {
-            "_id": get_new_uuid(),
+            "_id": 2,
             "name": "Bank",
             "image_url": f"{host}/files/cod.jpeg"
         },
