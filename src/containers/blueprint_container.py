@@ -1,6 +1,4 @@
 from flask import Blueprint, Flask
-from flask_restful import Api
-
 from src.containers.namespace_container import NamespaceContainer
 from src.containers.repository_container import RepositoryContainer
 
