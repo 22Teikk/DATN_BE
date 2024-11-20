@@ -30,6 +30,12 @@ class MySQL:
         except NoSuchTableError:
             print(f">>> Bảng '{table_name}' không tồn tại trong cơ sở dữ liệu. Đang tạo mới bảng...")
 
+            # Xử lý rollback nếu có lỗi trong giao dịch trước đó
+            try:
+                self.session.rollback()  # Rollback giao dịch nếu có lỗi
+            except Exception as e:
+                print(f">>> Lỗi khi rollback: {e}")
+
             # Tạo bảng mới nếu nó không tồn tại
             self.create_table(table_name, model)
             # Lấy lại bảng sau khi tạo
