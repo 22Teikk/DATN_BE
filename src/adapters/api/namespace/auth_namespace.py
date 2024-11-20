@@ -10,6 +10,7 @@ from flask_jwt_extended import (
 from flask_restx import Api, Resource
 from sqlalchemy import Row
 
+from src.containers.role_container import RoleContainer
 from src.domain.entities.utils import get_new_uuid, obj_to_dict
 from src.containers.user_profile_container import UserProfileContainer
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -21,6 +22,7 @@ class AuthNamespace:
     def __init__(
         self,
         container: UserProfileContainer,
+        role_container: RoleContainer,
         schema: UserProfileSchema,
         api: Api,
         namespace_name: str,
@@ -47,6 +49,25 @@ class AuthNamespace:
                             "tokens": {"access": access_token, "refresh": refresh_token},
                         }, 200
                 return {"error": "Invalid username or password"}, 400          
+
+        @namespace.route("/admin_login")
+        class AdminLogin(Resource):
+            def post(self):
+                data = request.get_json()
+                user_name = data.get("username")
+                password = data.get("password")
+                user = dict(container.usecase.find_by_query({"username": user_name})[0]._mapping)
+                if user and (check_password_hash(password=password, pwhash=user['password'])):
+                    role = role_container.usecase.find_by_id(user['role_id'])
+                    if role['name'] == 'Admin':
+                        access_token = create_access_token(identity=user_name)
+                        refresh_token = create_refresh_token(identity=user_name)
+                        return {
+                                "data": schema.dump(user),
+                                "message": "Logged In ",
+                                "tokens": {"access": access_token, "refresh": refresh_token},
+                            }, 200
+                return {"error": "Invalid username or password"}, 400      
         
         @namespace.route("/register")
         class Register(Resource):

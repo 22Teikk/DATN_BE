@@ -185,6 +185,7 @@ class NamespaceContainer:
             api=self.api,
             namespace_name="user_profiles",
             container=UserProfileContainer(self.repository_container),
+            role_container=RoleContainer(self.repository_container),
             schema=UserProfileSchema(),
         )
         ImageNamespace(
