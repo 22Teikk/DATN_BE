@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship
 from src.domain.entities.utils import Base
-from sqlalchemy import Column, String, Float, Time
+from sqlalchemy import Column, DateTime, String, Float, Time
 
 class Store(Base):
     __tablename__ = 'Store'
@@ -11,8 +11,8 @@ class Store(Base):
     description = Column(String(200), nullable=False)
     lat = Column(Float, nullable=False)
     long = Column(Float, nullable=False)
-    open_time = Column(Time, nullable=False)
-    close_time = Column(Time, nullable=False)
+    open_time = Column(String, nullable=False)
+    close_time = Column(String, nullable=False)
     image_src = Column(String(100), nullable=False)
     open_day = Column(String(50), nullable=False)
     phone = Column(String(10), nullable=False)
