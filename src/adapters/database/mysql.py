@@ -1,13 +1,14 @@
 from sqlalchemy import Column, Integer, String, create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import NoSuchTableError
+from sqlalchemy.exc import NoSuchTableError, InvalidRequestError
 from config import Config
 from src.domain.entities.utils import Base
 
 class MySQL:
     def __init__(self):
         try:
-            self.engine = create_engine(f"mysql+pymysql://{Config.MYSQL_USERNAME}:{Config.MYSQL_PASSWORD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.MYSQL_DB}")
+            self.engine = create_engine(f"mysql+pymysql://{Config.MYSQL_USERNAME}:{Config.MYSQL_PASSWORD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.MYSQL_DB}", pool_pre_ping=True,  # Đảm bảo kiểm tra kết nối trước khi sử dụng
+                pool_recycle=3600)
             Session = sessionmaker(bind=self.engine)
             self.session = Session()
 
@@ -17,7 +18,33 @@ class MySQL:
             exit(1)
 
     def get_session(self):
+        if not self._is_session_valid():
+            print(">>> Phiên làm việc không hợp lệ, tạo phiên mới...")
+            self._reset_session()
         return self.session
+
+    def _is_session_valid(self) -> bool:
+        """Kiểm tra trạng thái của phiên làm việc."""
+        try:
+            self.session.execute("SELECT 1")  # Kiểm tra xem kết nối có hoạt động không
+            return True
+        except InvalidRequestError:
+            print(">>> Session đã bị lỗi hoặc không hợp lệ.")
+            return False
+        except Exception as e:
+            print(f">>> Lỗi kiểm tra session: {e}")
+            return False
+
+    def _reset_session(self):
+        """Đóng phiên làm việc hiện tại và tạo một phiên mới."""
+        try:
+            self.session.close()  # Đóng phiên làm việc hiện tại
+        except Exception as e:
+            print(f">>> Lỗi khi đóng session: {e}")
+        finally:
+            Session = sessionmaker(bind=self.engine)
+            self.session = Session()  # Tạo phiên làm việc mới
+            print(">>> Phiên làm việc mới đã được tạo.")
 
     def get_table(self, table_name, model: type):
         meta = MetaData()
