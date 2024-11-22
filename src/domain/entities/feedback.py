@@ -13,8 +13,11 @@ class Feedback(Base):
     created_at = Column(DateTime(), nullable=False)
     product_id = Column(String(length=36), ForeignKey('Product._id'))
     user_id = Column(String(length=36), ForeignKey('User._id'))
-    products = relationship("Product", back_populates=__back_populates__)
+    
+    product = relationship("Product", back_populates="feedbacks")
     users = relationship("UserProfile", back_populates='feedbacks')
+    images = relationship("Image", back_populates="feedbacks")
+
     def __init__(
         self, 
         _id: str,

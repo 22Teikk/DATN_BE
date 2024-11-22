@@ -16,14 +16,15 @@ class Product(Base):
     thumbnail = Column(String(length=100))
     category_id = Column(String(length=36), ForeignKey('Category._id'), nullable=False)  # ID danh mục, liên kết với bảng categories
     discount_id = Column(String(length=36), ForeignKey('Discount._id'), nullable=True)  # ID giảm giá, liên kết với bảng discounts
-    feedback_id = Column(String(length=36), ForeignKey('Feedback._id'), nullable=True) # ID
     # Quan hệ với bảng feedback, categories và discounts
     categories = relationship("Category", back_populates=__back_populates__)  # Liên kết với bảng Category
     discounts = relationship("Discount", back_populates=__back_populates__)  # Liên kết với bảng Discount
     wishlists = relationship("Wishlist", back_populates=__back_populates__)  # Liên kết với bảng Wishlist
     carts = relationship("Cart", back_populates=__back_populates__)  # Liên kết với bảng Cart
     order_items = relationship("OrderItem", back_populates=__back_populates__)  # Liên kết với bảng OrderItem
-    feedbacks = relationship("Feedback", back_populates=__back_populates__)  # Liên kết với bảng Feedback
+    feedbacks = relationship("Feedback", back_populates="product", cascade="all, delete-orphan")
+    images = relationship("Image", back_populates="products")
+
     def __init__(self, _id: str, name: str, description: str, price: float,
         quantity_sold: int, is_sold: bool, total_time: int,
         category_id: str, thumbnail: str = "", feedback_id: str = None, discount_id: str = None,  ):
