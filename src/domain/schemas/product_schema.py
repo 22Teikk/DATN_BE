@@ -9,4 +9,6 @@ class ProductSchema(Schema):
     is_sold = fields.Bool(required=True, metadata={"description": "Indicates if the product is sold"})
     total_time = fields.Int(required=True, metadata={"description": "Total time the product is available"})
     category_id = fields.Str(required=True, metadata={"description": "Category ID"})
+    thumbnail = fields.String(required=True, metadata={"description": "Thumbnail"})
     discount_id = fields.Str(required=False, allow_none=True, metadata={"description": "Discount ID (optional)"})
+    feedback_id = fields.Str(required=False, allow_none=True, metadata={"description": "Discount ID (optional)"})
