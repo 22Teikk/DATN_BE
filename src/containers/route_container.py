@@ -13,6 +13,7 @@ class RouteContainer:
         self.flask.add_url_rule("/protected", view_func=self.protected_route)
         self.flask.add_url_rule("/files/<string:file>", view_func=self.custom_static)
         self.flask.add_url_rule("/upload", view_func=self.upload_file, methods=["POST"])
+        self.flask.add_url_rule("/upload_files", view_func=self.upload_files, methods=["POST"])
 
     def index(self):
         return "Hello, World!", 200
@@ -48,3 +49,34 @@ class RouteContainer:
         # Save the file and return the file URL
         file.save(file_path)
         return {"data": f"{Config.APP_HOST}/files/{safe_filename}"}, 200
+    
+    def upload_files(self):
+        if 'files' not in request.files:
+            return {"error": "No file part in request"}, 400
+
+        files = request.files.getlist('files')
+        if len(files) == 0:
+            return {"error": "No files selected"}, 400
+
+        uploaded_files = []
+        upload_dir = os.path.join(os.getcwd(), "static")  # Thư mục lưu trữ file
+        os.makedirs(upload_dir, exist_ok=True)  # Tạo thư mục nếu chưa tồn tại
+
+        for file in files:
+            if file.filename == '':
+                continue  # Bỏ qua file không có tên
+
+            # Tạo tên file an toàn và lưu trữ
+            file_extension = os.path.splitext(file.filename)[1]
+            safe_filename = secure_filename(f"uploaded_{get_new_uuid()}{file_extension}")
+            file_path = os.path.join(upload_dir, safe_filename)
+            file.save(file_path)
+
+            # Thêm đường dẫn file vào danh sách kết quả
+            file_url = f"{Config.APP_HOST}/files/{safe_filename}"
+            uploaded_files.append(file_url)
+
+        if not uploaded_files:
+            return {"error": "No valid files uploaded"}, 400
+
+        return {"data": uploaded_files}, 200
