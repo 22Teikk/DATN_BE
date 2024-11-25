@@ -9,11 +9,10 @@ COPY requirements.txt .
 
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
-COPY init.sh /app/init.sh
-RUN chmod +x /app/init.sh
+RUN chmod +x init.sh
 
 # Mở cổng 5001
 EXPOSE 5001 8501
 
 # Chạy ứng dụng Flask
-CMD ["/app/init.sh"]
+CMD ["./init.sh"]
