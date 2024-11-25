@@ -50,6 +50,7 @@ services:
     image: datn-be
     ports:
       - "5001:5001"  
+      - "8501:8501"
     environment:
       - MYSQL_USERNAME = ${MYSQL_USERNAME} 
       - APP_HOST = ${APP_HOST} 
