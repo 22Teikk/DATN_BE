@@ -19,7 +19,6 @@ class MySQL:
 
     def get_session(self):
         if not self._is_session_valid():
-            print(">>> Phiên làm việc không hợp lệ, tạo phiên mới...")
             self._reset_session()
         return self.session
 
@@ -29,10 +28,8 @@ class MySQL:
             self.session.execute("SELECT 1")  # Kiểm tra xem kết nối có hoạt động không
             return True
         except InvalidRequestError:
-            print(">>> Session đã bị lỗi hoặc không hợp lệ.")
             return False
         except Exception as e:
-            print(f">>> Lỗi kiểm tra session: {e}")
             return False
 
     def _reset_session(self):
@@ -44,7 +41,6 @@ class MySQL:
         finally:
             Session = sessionmaker(bind=self.engine)
             self.session = Session()  # Tạo phiên làm việc mới
-            print(">>> Phiên làm việc mới đã được tạo.")
 
     def get_table(self, table_name, model: type):
         meta = MetaData()
@@ -52,10 +48,8 @@ class MySQL:
         try:
             # Tự động ánh xạ bảng từ database
             table = Table(table_name, meta, autoload_with=self.engine)
-            print(f">>> Bảng '{table_name}' đã được ánh xạ thành công.")
             return table
         except NoSuchTableError:
-            print(f">>> Bảng '{table_name}' không tồn tại trong cơ sở dữ liệu. Đang tạo mới bảng...")
 
             # Xử lý rollback nếu có lỗi trong giao dịch trước đó
             try:
@@ -79,4 +73,3 @@ class MySQL:
         
         # Tạo bảng mới
         Base.metadata.create_all(self.engine)
-        print(f">>> Bảng '{table_name}' đã được tạo thành công.")

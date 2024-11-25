@@ -56,8 +56,6 @@ class RepositoryContainer:
         self.entity_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Entity.__tablename__, Entity), self._cache, EntitySchema()
         )
-        print(f">>>>>>>>>>>>>>>>>>>>>>>>>>> Session type: {type(self.sqldb.session)}")
-
         self.category_repository = MySQLRepository(
             self.sqldb.get_session(),self.sqldb.get_table(Category.__tablename__, Category), self._cache, CategorySchema()
         )
