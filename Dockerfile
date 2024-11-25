@@ -7,14 +7,11 @@ WORKDIR /app
 # Sao chép file requirements.txt vào container
 COPY requirements.txt .
 
-# Cài đặt các thư viện cần thiết
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
 # Mở cổng 5001
-EXPOSE 5001
+EXPOSE 5001 8501
 
 # Chạy ứng dụng Flask
-CMD ["python", "app.py"]
+CMD ["bash", "init.sh"]
