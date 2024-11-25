@@ -1,0 +1,10 @@
+[[pages]]
+path = "src/pages/root.py"
+name = "Home"
+icon = "🏠"
+
+[[pages]]
+path = "src/pages/category.py"
+name = "Category"
+icon = "📚"
+

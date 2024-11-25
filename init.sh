@@ -6,5 +6,6 @@ pip install --upgrade pip --no-cache-dir --break-system-packages
 pip install -r requirements.txt --break-system-packages
 
 bash kill.sh 5001 || exit 0
+bash kill.sh 8501 || exit 0
 
-python3 app.py &
+python3 app.py & streamlit run home.py &

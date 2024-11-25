@@ -53,3 +53,7 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 Werkzeug==3.0.4
 wsproto==1.2.0
+streamlit
+streamlit-authenticator==0.3.3
+xmltodict
+st_pages

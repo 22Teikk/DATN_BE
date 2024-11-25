@@ -1,0 +1,22 @@
+cookie:
+  expiry_days: 30
+  key: "XDxZf6wxjUqMbuPclCcDtl3kRfnAzXPUzMKehiY07GaUu" # Must be a string
+  name: XDxZf6wxjUqMbuPclCcDtl3kRfnAzXPUzMKehiY07GaUu
+credentials:
+  usernames:
+    develop:
+      name: Developer
+      logged_in: False 
+      password: $2y$10$NtQGsBZ52mclFU76HMnWQ.Wy2fJBvsiS3MBouQE1HcggO/K6.2wwe 
+      roles:
+      - admin
+      - editor
+      - viewer
+    release:
+      name: Release
+      logged_in: False 
+      password: $2y$10$vsK8.1L/XDxZf6wxjUqMbuPclCcDtl3kRfnAzXPUzMKehiY07GaUu 
+      roles: 
+      - admin
+      - editor
+      - viewer

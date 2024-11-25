@@ -1,0 +1,11 @@
+[server]
+headless = true
+port = 8501
+enableCORS = true
+enableStaticServing = true
+
+[theme]
+base="dark"
+font = "sans serif"
+layout = "wide"
+theme = "dark"
