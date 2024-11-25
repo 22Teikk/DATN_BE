@@ -130,3 +130,38 @@ with tab2:
         }
     )
 
+    c1,c2, c3 = st.columns(3)
+    with c1:
+        if st.button("Reset", type='secondary', use_container_width=True):
+            load_product_data()
+            st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng
+    with c3:
+        if st.button("Delete", use_container_width=True, type="primary"):
+            edited_df["Select"] = edited_df["Select"].fillna(False)
+            
+            # Lọc các dòng được chọn
+            selected_rows = edited_df[edited_df["Select"]]
+            
+            if selected_rows.empty:
+                st.warning("No rows selected")
+            else:
+                for row in selected_rows.to_dict("records"):
+                    category_container.usecase.delete(row["_id"])  # Xóa trong DB
+                st.success("Records deleted successfully.")
+                load_product_data()
+                st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng   
+    with c2:
+        if st.button("Update", use_container_width=True, type="secondary"):
+            edited_df["Select"] = edited_df["Select"].fillna(False)
+            
+            # Lọc các dòng được chọn
+            selected_rows = edited_df[edited_df["Select"]]
+            
+            if selected_rows.empty:
+                st.warning("No rows selected")
+            elif len(selected_rows) != 1:
+                st.warning("Please selected one row to update!")
+            else:
+                st.write("Update")
+
+
