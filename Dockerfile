@@ -1,5 +1,5 @@
 # Sử dụng Python 3.11-alpine
-FROM python:3.11-alpine
+FROM python:3.10-alpine
 
 # Đặt thư mục làm việc trong container
 WORKDIR /app
