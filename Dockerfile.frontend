@@ -1,0 +1,21 @@
+# Sử dụng Python 3.10-alpine
+FROM python:3.9-slim
+
+# Đặt thư mục làm việc
+USER root
+WORKDIR /app
+
+# Sao chép file requirements.txt
+COPY requirements.txt .
+
+# Cài đặt các thư viện Python
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Sao chép toàn bộ mã nguồn
+COPY . .
+
+# Mở cổng 5001 và 8501
+EXPOSE 8501
+# Chạy Flask và Streamlit
+CMD [ "streamlit", "run" , "home.py"]

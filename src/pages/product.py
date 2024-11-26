@@ -17,6 +17,7 @@ import requests
 product_container = ProductContainer(repository_container)
 category_container = CategoryContainer(repository_container)
 tab1, tab2 = st.tabs(["Create", "Manage"])
+
 def load_product_data():
     try:
         if st.session_state.cate_id:
@@ -40,6 +41,12 @@ def load_product_data():
 category_datas = ProductSchema().dump(category_container.usecase.find_by_query({}), many=True)
 formatted_options = [f"{category['name']}" for category in category_datas]
 
+if 'dek' not in st.session_state:
+    st.session_state.dek = str(uuid.uuid4())
+if "cate_id" not in st.session_state:
+    st.session_state.cate_id = None
+if 'df_product' not in st.session_state:
+    st.session_state.df_product = None
 
 with tab1:
     tab1.subheader("Create New Product")
@@ -97,13 +104,6 @@ with tab1:
 
 
 with tab2:
-    if 'dek' not in st.session_state:
-        st.session_state.dek = str(uuid.uuid4())
-    if "cate_id" not in st.session_state:
-        st.session_state.cate_id = None
-    if 'df_product' not in st.session_state:
-        load_product_data()
-
     st.write("## Sort by Category")
     option = st.selectbox(
         "Select Category of product you want to see.",

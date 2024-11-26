@@ -50,7 +50,9 @@ services:
     image: datn-be
     ports:
       - "5001:5001"  
-      - "8501:8501"
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     environment:
       - MYSQL_USERNAME = ${MYSQL_USERNAME} 
       - APP_HOST = ${APP_HOST} 
@@ -66,6 +68,18 @@ services:
       - mysql
       - mongo
     restart: unless-stopped
+    networks:
+      - flask_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend  # Chỉ định Dockerfile cho frontend
+    container_name: datn_admin
+    ports:
+      - "8501:8501"
+    depends_on:
+      - flask_app
     networks:
       - flask_network
 
