@@ -76,6 +76,16 @@ services:
       context: .
       dockerfile: Dockerfile.frontend  # Chỉ định Dockerfile cho frontend
     container_name: datn_admin
+    environment:
+      - MYSQL_USERNAME = ${MYSQL_USERNAME} 
+      - APP_HOST = ${APP_HOST} 
+      - MYSQL_PASSWORD = ${MYSQL_PASSWORD} 
+      - MYSQL_HOST = ${MYSQL_HOST} 
+      - MYSQL_PORT = ${MYSQL_PORT} 
+      - MYSQL_DB = ${MYSQL_DB} 
+      - AUTHENTICATION_KEY = ${AUTHENTICATION_KEY}
+      - JWT_SECRET_KEY = ${JWT_SECRET_KEY}
+      - JWT_TOKEN_LOCATION = ${JWT_TOKEN_LOCATION}
     ports:
       - "8501:8501"
     depends_on:

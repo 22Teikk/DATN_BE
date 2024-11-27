@@ -4,12 +4,12 @@ import pandas as pd
 import numpy as np
 import os
 
+from config import Config
 from src.domain.schemas.image_schema import ImageSchema
 from src.containers.category_container import CategoryContainer
 from src.domain.schemas.product_schema import ProductSchema
 from src.domain.entities.product import Product
 from src.domain.entities.utils import get_new_uuid
-from src.pages.utils import create_form_from_object, schema_to_form
 from src.pages.container import repository_container
 from src.containers.product_container import ProductContainer
 import requests
@@ -86,11 +86,10 @@ with tab1:
                     for file in uploaded_files
                 ]
                 
-                url = f"{os.getenv('APP_HOST')}/api/v1/images"  # URL của API upload file
+                url = f"{Config.APP_HOST}/api/v1/images"  # URL của API upload file
                 payload = {"product_id": _id, "feedback_id": ""}
                 try:
                     response = requests.post(url, files=files, data=payload)
-                    
                     # Xử lý kết quả trả về từ API
                     if response.status_code == 201:
                         uploaded_urls = ImageSchema().load(response.json(), many=True)
