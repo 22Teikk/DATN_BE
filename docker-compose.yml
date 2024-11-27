@@ -63,6 +63,8 @@ services:
       - AUTHENTICATION_KEY = ${AUTHENTICATION_KEY}
       - JWT_SECRET_KEY = ${JWT_SECRET_KEY}
       - JWT_TOKEN_LOCATION = ${JWT_TOKEN_LOCATION}
+    volumes:
+      - ./static:/app/static
     depends_on:
       - redis
       - mysql
