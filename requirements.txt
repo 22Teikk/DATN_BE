@@ -59,3 +59,4 @@ streamlit-authenticator==0.3.3
 xmltodict
 st_pages
 plotly
+streamlit-image-select
