@@ -28,6 +28,26 @@ def load_category_data():
             df.insert(0, "Select", False)  # Đảm bảo cột 'Select' ở vị trí đầu tiên
         
     st.session_state.df_category = df  # Cập nhật DataFrame trong session state
+    st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng
+
+def delete_rows():
+    editor["Select"] = editor["Select"].fillna(False)
+    selected_rows = editor[editor["Select"]]
+    
+    if selected_rows.empty:
+        st.warning("No rows selected")
+    else:
+        for row in selected_rows.to_dict("records"):
+            category_container.usecase.delete(row["_id"])  # Xóa trong DB
+        st.success("Records deleted successfully.")
+        load_category_data()
+
+def save_change():
+    records = editor.drop(columns=["Select"]).to_dict("records")  # Bỏ cột Select
+    category_container.usecase.upserts(records)  # Lưu dữ liệu vào DB
+    load_category_data()
+    st.success("Save changes")
+
 if 'dek' not in st.session_state:
     st.session_state.dek = str(uuid.uuid4())
 if "show_form" not in st.session_state:
@@ -96,27 +116,8 @@ hide_index=True)
 
 c1,c2, c3= st.columns(3)
 with c1:
-    if st.button("Reset", type='secondary', use_container_width=True):
-        load_category_data()
-        st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng
+    st.button("Reset", on_click=load_category_data, type='secondary', use_container_width=True)
 with c2:
-    if st.button("Delete", use_container_width=True, type="secondary"):
-        editor["Select"] = editor["Select"].fillna(False)
-        
-        # Lọc các dòng được chọn
-        selected_rows = editor[editor["Select"]]
-        
-        if selected_rows.empty:
-            st.warning("No rows selected")
-        else:
-            for row in selected_rows.to_dict("records"):
-                category_container.usecase.delete(row["_id"])  # Xóa trong DB
-            st.success("Records deleted successfully.")
-            load_category_data()
-            st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng   
+    st.button("Delete", on_click=delete_rows, use_container_width=True, type="secondary")
 with c3:
-    if st.button("Save Changes", type='primary', use_container_width=True):
-        records = editor.drop(columns=["Select"]).to_dict("records")  # Bỏ cột Select
-        category_container.usecase.upserts(records)  # Lưu dữ liệu vào DB
-        load_category_data()
-        st.success("Save changes")
+    st.button("Save Changes", on_click=save_change, type='primary', use_container_width=True)

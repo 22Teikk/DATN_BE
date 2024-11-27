@@ -18,6 +18,9 @@ product_container = ProductContainer(repository_container)
 category_container = CategoryContainer(repository_container)
 tab1, tab2 = st.tabs(["Create", "Manage"])
 
+category_datas = ProductSchema().dump(category_container.usecase.find_by_query({}), many=True)
+formatted_options = [f"{category['name']}" for category in category_datas]
+
 def load_product_data():
     try:
         if st.session_state.cate_id:
@@ -35,18 +38,30 @@ def load_product_data():
                 df.insert(0, "Select", False)  # Đảm bảo cột 'Select' ở vị trí đầu tiên
 
             st.session_state.df_product = df
+        else:
+            st.session_state.df_product = pd.DataFrame()
+        st.session_state.dek = str(uuid.uuid4())
     except Exception as e:
-        st.session_state.df_product = None
-
-category_datas = ProductSchema().dump(category_container.usecase.find_by_query({}), many=True)
-formatted_options = [f"{category['name']}" for category in category_datas]
+        st.session_state.df_product = pd.DataFrame()
 
 if 'dek' not in st.session_state:
     st.session_state.dek = str(uuid.uuid4())
 if "cate_id" not in st.session_state:
-    st.session_state.cate_id = None
+    st.session_state.cate_id = category_datas[0].get('_id')
 if 'df_product' not in st.session_state:
-    st.session_state.df_product = None
+    load_product_data()
+
+def delete_rows():
+    edited_df["Select"] = edited_df["Select"].fillna(False)
+    selected_rows = edited_df[edited_df["Select"]]
+    
+    if selected_rows.empty:
+        st.warning("No rows selected")
+    else:
+        for row in selected_rows.to_dict("records"):
+            product_container.usecase.delete(row["_id"])  # Xóa trong DB
+        st.success("Records deleted successfully.")
+        load_product_data()
 
 with tab1:
     tab1.subheader("Create New Product")
@@ -110,57 +125,29 @@ with tab2:
     )
     selected_index = formatted_options.index(option)
     selected_cate = category_datas[selected_index]
-    st.write(selected_cate)
     cate_id = selected_cate["_id"]
+    if 'cate_id' not in st.session_state or st.session_state['cate_id'] != cate_id:
+        st.session_state.cate_id = cate_id
+        load_product_data()
 
+    # load_product_data()
     st.write("## List Product")
     edited_df = st.data_editor(
         st.session_state.df_product,
         num_rows="dynamic",
         use_container_width=True,
         disabled=["_id"],
-        key=st.session_state.dek,
         column_config={
-            "category_id": st.column_config.SelectboxColumn(
-                "Category",
-                width="medium",
-                options=formatted_options,
-            )
-        }
+            "thumbnail": st.column_config.ImageColumn(
+                "Preview Image",
+                width=100,
+            ),
+        },
+        key=st.session_state.dek,
     )
 
-    c1,c2, c3 = st.columns(3)
+    c1,c2 = st.columns(2)
     with c1:
-        if st.button("Reset", type='secondary', use_container_width=True):
-            load_product_data()
-            st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng
-    with c3:
-        if st.button("Delete", use_container_width=True, type="primary"):
-            edited_df["Select"] = edited_df["Select"].fillna(False)
-            
-            # Lọc các dòng được chọn
-            selected_rows = edited_df[edited_df["Select"]]
-            
-            if selected_rows.empty:
-                st.warning("No rows selected")
-            else:
-                for row in selected_rows.to_dict("records"):
-                    category_container.usecase.delete(row["_id"])  # Xóa trong DB
-                st.success("Records deleted successfully.")
-                load_product_data()
-                st.session_state.dek = str(uuid.uuid4())  # Đổi khóa để làm mới bảng   
+        st.button("Reset", on_click=load_product_data, type='secondary', use_container_width=True)
     with c2:
-        if st.button("Update", use_container_width=True, type="secondary"):
-            edited_df["Select"] = edited_df["Select"].fillna(False)
-            
-            # Lọc các dòng được chọn
-            selected_rows = edited_df[edited_df["Select"]]
-            
-            if selected_rows.empty:
-                st.warning("No rows selected")
-            elif len(selected_rows) != 1:
-                st.warning("Please selected one row to update!")
-            else:
-                st.write("Update")
-
-
+        st.button("Delete", on_click=delete_rows, use_container_width=True, type="primary")
