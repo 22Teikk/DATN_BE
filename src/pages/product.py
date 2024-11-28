@@ -114,11 +114,11 @@ def update_product_dialog(product_dict):
     
     data_dict = {item["_id"]: item["name"] for item in category_datas}
 
-    name = data_dict.get(product_dict["category_id"], None)
+    cate_name = data_dict.get(product_dict["category_id"], None)
     option = st.selectbox(
         "Category",
         options=formatted_options,
-        index=formatted_options.index(name)
+        index=formatted_options.index(cate_name)
     )
     selected_index = formatted_options.index(option)
     selected_cate = category_datas[selected_index]
