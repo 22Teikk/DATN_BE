@@ -121,7 +121,6 @@ def update_product_dialog(product_dict):
         category_id=cate_id,
         thumbnail=product_dict["thumbnail"],
         discount_id=None,
-        feedback_id=None
     )
     with st.form("form_image", clear_on_submit=True):
         uploaded_files = st.file_uploader("Add Image", accept_multiple_files=True, type=(["png", "jpg", "webp", "gif"]))
@@ -179,7 +178,6 @@ with tab2:
             category_id=cate_id,
             thumbnail="",
             discount_id=None,
-            feedback_id=None
         )
         uploaded_files = st.file_uploader("Selected Image", accept_multiple_files=True, type=(["png", "jpg", "webp", "gif"]))
         if st.form_submit_button("Create", type='primary', use_container_width=True):
