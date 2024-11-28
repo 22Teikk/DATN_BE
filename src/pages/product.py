@@ -141,7 +141,6 @@ def update_product_dialog(product_dict):
         upload_file(product._id, uploaded_files)
         
     image_datas = ImageSchema().dump(image_container.usecase.find_by_query({"product_id": product_dict["_id"]}), many=True)
-    print(image_datas)
     list_image = [image['url'] for image in image_datas]
     if len(image_datas) > 0:
         with st.form("form_image", clear_on_submit=True):
@@ -151,9 +150,7 @@ def update_product_dialog(product_dict):
                 use_container_width=True
             )
             img_selected = {item["url"] : item['_id'] for item in image_datas}
-            print(img_selected)
             img_id = img_selected.get(img, None)
-            print(img_id)
             c1, c2 = st.columns(2)
             with c1:
                 if st.form_submit_button("Delete", type='secondary', use_container_width=True):
@@ -161,9 +158,8 @@ def update_product_dialog(product_dict):
             with c2:
                 if st.form_submit_button(label="Save", type="primary", use_container_width=True):
                     product.thumbnail = img
-                    print(img)
-                    print(product.thumbnail)
     if st.button("Update Product", type="primary", use_container_width=True):
+        product.thumbnail = img
         product_container.usecase.update(ProductSchema().dump(product))
         load_product_data()
         st.rerun()
