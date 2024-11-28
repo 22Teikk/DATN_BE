@@ -163,6 +163,7 @@ def update_product_dialog(product_dict):
                     product.thumbnail = img_id
     if st.button("Update Product", type="primary", use_container_width=True):
         product_container.usecase.update(ProductSchema().dump(product))
+        load_product_data()
         st.rerun()
 
 with tab2:
