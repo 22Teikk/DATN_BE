@@ -99,6 +99,7 @@ networks:
   flask_network:
     driver: bridge
 
+
 volumes:
   mysql_data:
   mongo-data:
