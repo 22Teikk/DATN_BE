@@ -27,7 +27,7 @@ class Product(Base):
 
     def __init__(self, _id: str, name: str, description: str, price: float,
         quantity_sold: int, is_sold: bool, total_time: int,
-        category_id: str, thumbnail: str = "", feedback_id: str = None, discount_id: str = None,  ):
+        category_id: str, thumbnail: str = "", discount_id: str = None,  ):
         self._id = _id
         self.name = name
         self.description = description
@@ -38,5 +38,3 @@ class Product(Base):
         self.category_id = category_id
         self.thumbnail = thumbnail
         self.discount_id = discount_id
-        self.feedback_id = feedback_id
-

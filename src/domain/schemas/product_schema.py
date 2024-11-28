@@ -11,4 +11,3 @@ class ProductSchema(Schema):
     category_id = fields.Str(required=True, metadata={"description": "Category ID"})
     thumbnail = fields.String(required=True, metadata={"description": "Thumbnail"})
     discount_id = fields.Str(required=False, allow_none=True, metadata={"description": "Discount ID (optional)"})
-    feedback_id = fields.Str(required=False, allow_none=True, metadata={"description": "Discount ID (optional)"})
