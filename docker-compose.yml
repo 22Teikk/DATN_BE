@@ -78,6 +78,8 @@ services:
       context: .
       dockerfile: Dockerfile.frontend  # Chỉ định Dockerfile cho frontend
     container_name: datn_admin
+    volumes:
+      - ./static:/app/static
     environment:
       - MYSQL_USERNAME = ${MYSQL_USERNAME} 
       - APP_HOST = ${APP_HOST} 
