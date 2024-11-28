@@ -6,6 +6,7 @@ import numpy as np
 import os
 
 from config import Config
+from src.domain.entities.image import Image
 from src.domain.schemas.image_schema import ImageSchema
 from src.containers.category_container import CategoryContainer
 from src.domain.schemas.product_schema import ProductSchema
@@ -68,26 +69,39 @@ def delete_rows():
         st.success("Records deleted successfully.")
         load_product_data()
 
+def update_file_info(product_id, file) -> Image:
+    id = str(get_new_uuid())
+    folder = "static"
+
+    # Kiểm tra và tạo thư mục nếu chưa có
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    
+    # Lấy phần mở rộng của tệp
+    file_extension = os.path.splitext(file.name)[1]
+    
+    # Tạo đường dẫn lưu trữ tệp
+    file_path = os.path.join(folder, id + file_extension)
+    
+    # Lưu tệp vào đĩa
+    with open(file_path, "wb") as f:
+        f.write(file.getvalue())
+
+    # Tạo URL cho tệp đã lưu
+    url = f"{Config.APP_HOST}/files/{id}{file_extension}"
+    
+    # Tạo đối tượng Image với id, URL và product_id
+    image_file = Image(id, url, product_id= product_id)
+    
+    return image_file
+
 def upload_file(product_id, uploaded_files) -> str:
-    files = [
-        ("files", (file.name, file.getvalue(), file.type))
+    uploaded_images = [
+        update_file_info(product_id, file)
         for file in uploaded_files
     ]
-    
-    url = f"{Config.APP_HOST}/api/v1/images"  # URL của API upload file
-    payload = {"product_id": product_id, "feedback_id": ""}
-    try:
-        response = requests.post(url, files=files, data=payload)
-        # Xử lý kết quả trả về từ API
-        if response.status_code == 201:
-            uploaded_urls = ImageSchema().load(response.json(), many=True)
-            return uploaded_urls[0].get("url")
-        else:
-            print(response.text)
-            return ""
-    except Exception as e:
-        print(e)
-        return ""
+    image_container.usecase.upserts(ImageSchema().dump(uploaded_images, many=True))
+    return uploaded_images[0].url
 
 @st.dialog(title="Update Product", width='large')
 def update_product_dialog(product_dict):
@@ -122,14 +136,15 @@ def update_product_dialog(product_dict):
         thumbnail=product_dict["thumbnail"],
         discount_id=None,
     )
-    with st.form("form_image", clear_on_submit=True):
-        uploaded_files = st.file_uploader("Add Image", accept_multiple_files=True, type=(["png", "jpg", "webp", "gif"]))
-        if st.form_submit_button("Add", type='primary', use_container_width=True):
-            upload_file(product._id, uploaded_files)
-        image_datas = ImageSchema().dump(image_container.usecase.find_by_query({"product_id": product_dict["_id"]}), many=True)
-        print(image_datas)
-        list_image = [image['url'] for image in image_datas]
-        if len(image_datas) > 0:
+    uploaded_files = st.file_uploader("Add Image", accept_multiple_files=True, type=(["png", "jpg", "webp", "gif"]))
+    if st.button("Add", type='primary', use_container_width=True):
+        upload_file(product._id, uploaded_files)
+        
+    image_datas = ImageSchema().dump(image_container.usecase.find_by_query({"product_id": product_dict["_id"]}), many=True)
+    print(image_datas)
+    list_image = [image['url'] for image in image_datas]
+    if len(image_datas) > 0:
+        with st.form("form_image", clear_on_submit=True):
             img = image_select(
                 label="Manage Image Of Product",
                 images=list_image,
@@ -139,13 +154,13 @@ def update_product_dialog(product_dict):
             print(img_selected)
             img_id = img_selected.get(img, None)
             print(img_id)
-        c1, c2 = st.columns(2)
-        with c1:
-            if st.form_submit_button("Delete", type='secondary', use_container_width=True):
-                image_container.usecase.delete(img_id)
-        with c2:
-            if st.form_submit_button(label="Save", type="primary", use_container_width=True):
-                product.thumbnail = img_id
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.form_submit_button("Delete", type='secondary', use_container_width=True):
+                    image_container.usecase.delete(img_id)
+            with c2:
+                if st.form_submit_button(label="Save", type="primary", use_container_width=True):
+                    product.thumbnail = img_id
     if st.button("Update Product", type="primary", use_container_width=True):
         product_container.usecase.update(ProductSchema().dump(product))
         st.rerun()
