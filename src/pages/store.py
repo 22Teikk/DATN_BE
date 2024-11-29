@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 
+from src.domain.schemas.store_schema import StoreSchema
 from src.domain.entities.store import Store
 from src.domain.entities.utils import get_new_uuid
 from src.pages.utils import create_form_from_object
@@ -13,14 +14,8 @@ from src.containers.store_container import StoreContainer
 store_container = StoreContainer(repository_container)
 store = store_container.usecase.find_by_id("77c611bd-9195-4d54-a48c-a526e16c31df")
 
-print(store)
-
-if "dek" not in st.session_state:
-    st.session_state.dek = str(uuid.uuid4())
-
 def update_store(store):
-    store_container.usecase.update(store)
-    st.success("Update store successful")
+    store_container.usecase.update(StoreSchema().dump(store))
 
 st.write("## Store")
 st.image(store['image_src'])
@@ -33,7 +28,7 @@ open_day = st.text_input(label="Open day",value=store['open_day'])
 phone = st.text_input(label="Phone number",value=store['phone'])
 email = st.text_input(label="Email address",value=store['email'])
 store_model = Store(
-    _id = store['_id'],
+    _id = "77c611bd-9195-4d54-a48c-a526e16c31df",
     name = name,
     address = address,
     description = des,
@@ -46,4 +41,7 @@ store_model = Store(
     email = email,
     image_src = store['image_src']
 )
-st.button("Update", on_click=update_store(store_model), type='primary', use_container_width=True)
+if st.button("Update", type='primary', use_container_width=True):
+    update_store(store_model)
+    st.success("Store updated successfully!")
+    st.rerun()
