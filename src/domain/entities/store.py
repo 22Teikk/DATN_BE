@@ -29,7 +29,6 @@ class Store(Base):
         long: float,
         open_time: str,
         close_time: str,
-        image_id: str,
         open_day: str,
         phone: str,
         image_src: str,
@@ -43,7 +42,6 @@ class Store(Base):
         self.long = long
         self.open_time = open_time
         self.close_time = close_time
-        self.image_id = image_id
         self.open_day = open_day
         self.phone = phone
         self.email = email

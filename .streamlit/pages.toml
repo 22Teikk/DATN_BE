@@ -13,3 +13,7 @@ path = "src/pages/product.py"
 name = "Product"
 icon = "♨️"
 
+[[pages]]
+path = "src/pages/store.py"
+name = "Store"
+icon = "💼"
