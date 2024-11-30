@@ -28,4 +28,18 @@ class CartNamespace(EntityNamespace):
                     return schema.dump(items, many=True), 200
                 else:
                     return {"error": "User ID not provided"}, 400
+                
+            def post(self):
+                data = request.get_json()
+                if data is None:
+                    return {"error": "No input data provided"}, 400
+                try:
+                    valid_data = schema.load(data, many=True)
+                    response = container.usecase.upserts(valid_data)
+                    if response.get("status") == "success":
+                        return {"message": "Carts update successfully"}, 201
+                    else:
+                        return {"error": response}, 500
+                except Exception as e:
+                    return {"error": str(e)}, 400
 
