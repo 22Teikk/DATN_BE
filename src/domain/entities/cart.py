@@ -10,7 +10,7 @@ class Cart(Base):
     _id = Column(String(length=36) ,primary_key=True)
     user_id = Column(String(length=36), ForeignKey('User._id'))
     product_id = Column(String(length=36), ForeignKey('Product._id'))
-    created_at = Column(DateTime())
+    created_at = Column(String(length=100))
     quantity = Column(Integer)
 
     products = relationship("Product", back_populates=__back_populates__)
@@ -20,11 +20,11 @@ class Cart(Base):
         _id: str,
         user_id: str,
         product_id: str,
-        created_at: datetime.datetime = None,
+        created_at: str,
         quantity: int = 1, 
         ):
         self._id = _id
         self.user_id = user_id
         self.product_id = product_id
-        self.created_at = created_at if created_at else datetime.datetime.now()
+        self.created_at = created_at
         self.quantity = quantity
