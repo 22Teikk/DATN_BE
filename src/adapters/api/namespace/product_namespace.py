@@ -30,7 +30,7 @@ class ProductNamespace(EntityNamespace):
             @self.namespace.response(200, f"{entity_name} retrieved")
             @self.namespace.response(404, f"{entity_name} not found")
             @self.namespace.response(401, "Unauthorized")
-            @jwt_required()
+            # @jwt_required()
             def get(self):
                 name = request.args.get("name")
                 category = request.args.get("category")

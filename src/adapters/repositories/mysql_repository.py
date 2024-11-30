@@ -14,39 +14,42 @@ class MySQLRepository(EntityRepository):
         self._cache = cache
         self.schema = schema
 
-
-
-
-    # Return list Row
     def find_by_query(self, query: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
         """Tìm kiếm bản ghi theo truy vấn."""
-        print(">>>>>>>> Find by query " + str(query))
-        if query == {}:
-            return self.session.query(self.table).all()
-        else: 
-            return self.session.query(self.table).filter_by(**query).all()
+        try:
+            if query == {}:
+                return self.session.query(self.table).all()
+            else: 
+                return self.session.query(self.table).filter_by(**query).all()
+        except Exception as e:
+            self.session.rollback()  # Ensure rollback on error
+            print(f"Error in find_by_query: {e}")
+            return []
 
     def find_by_id(self, _id: Any) -> Dict[str, Any]:
         """Tìm kiếm bản ghi theo ID."""
-        print(">>>>>>> Find By ID " + str(_id))
-
-        return self.schema.dump(self.session.query(self.table).filter_by(_id=_id).first())
+        try:
+            return self.schema.dump(self.session.query(self.table).filter_by(_id=_id).first())
+        except Exception as e:
+            self.session.rollback()  # Ensure rollback on error
+            print(f"Error in find_by_id: {e}")
+            return {}
 
     def insert(self, data: Dict[str, Any]) -> int:
         """Chèn một bản ghi mới vào bảng."""
         try:
             stmt = insert(self.table).values(**data)
             result = self.session.execute(stmt)
-            self.session.commit()  
+            self.session.commit()  # Commit transaction
             return result.inserted_primary_key[0]
         except IntegrityError:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on integrity error
             print(f"Integrity error occurred during insert: {data}")
-            return -1  # Hoặc ném ra ngoại lệ
+            return -1  # Handle integrity error
         except Exception as e:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on any other error
             print(f"Insert error: {e}")
-            return -1  # Hoặc ném ra ngoại lệ
+            return -1  # Handle generic errors
 
     def update(self, data: Dict[str, Any]) -> int:
         """Cập nhật bản ghi đã tồn tại."""
@@ -54,12 +57,12 @@ class MySQLRepository(EntityRepository):
             data_update = {key: value for key, value in data.items() if key != '_sa_instance_state'}
             print(data_update)
             self.session.query(self.table).filter_by(_id=data['_id']).update(data_update)
-            self.session.commit()
+            self.session.commit()  # Commit transaction
             return data['_id']
         except Exception as e:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on error
             print(f"Update error: {e}")
-            return -1
+            return -1  # Handle error
 
     def upserts(self, datas: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Chèn hoặc cập nhật nhiều bản ghi."""
@@ -67,10 +70,10 @@ class MySQLRepository(EntityRepository):
             for data in datas:
                 stmt = insert(self.table).values(data).on_duplicate_key_update(**data)
                 self.session.execute(stmt)
-            self.session.commit()
+            self.session.commit()  # Commit transaction
             return {"status": "success"}
         except Exception as e:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on error
             print(f"Upsert error: {e}")
             return {"status": "error", "error": str(e)}
 
@@ -78,12 +81,12 @@ class MySQLRepository(EntityRepository):
         """Xóa bản ghi theo ID."""
         try:
             result = self.session.query(self.table).filter_by(_id=_id).delete()
-            self.session.commit()
+            self.session.commit()  # Commit transaction
             return result
         except Exception as e:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on error
             print(f"Delete error: {e}")
-            return -1
+            return -1  # Handle error
 
     def chunk(
         self,
@@ -101,12 +104,12 @@ class MySQLRepository(EntityRepository):
         """Xóa tất cả bản ghi trong bảng."""
         try:
             result = self.session.query(self.table).delete()
-            self.session.commit()
+            self.session.commit()  # Commit transaction
             return result
         except Exception as e:
-            self.session.rollback()
+            self.session.rollback()  # Ensure rollback on error
             print(f"Clean error: {e}")
-            return -1
+            return -1  # Handle error
 
     # Cache methods
     def get_cache_manager(self):
@@ -114,7 +117,12 @@ class MySQLRepository(EntityRepository):
 
     def find_by_dict(self, dict: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Tìm kiếm bản ghi theo từ điển."""
-        return self.session.query(self.table).filter_by(**dict).all()
+        try:
+            return self.session.query(self.table).filter_by(**dict).all()
+        except Exception as e:
+            self.session.rollback()  # Ensure rollback on error
+            print(f"Error in find_by_dict: {e}")
+            return []
 
     def get_table_manager(self):
         """Lấy quản lý bảng (session hoặc table)."""
@@ -136,5 +144,5 @@ class MySQLRepository(EntityRepository):
         pass
 
     def get_session_manager(self):
-        return self.session 
+        return self.session
 
