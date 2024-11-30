@@ -42,9 +42,9 @@ class MySQLRepository(EntityRepository):
             result = self.session.execute(stmt)
             self.session.commit()  # Commit transaction
             return result.inserted_primary_key[0]
-        except IntegrityError:
+        except IntegrityError as e:
             self.session.rollback()  # Ensure rollback on integrity error
-            print(f"Integrity error occurred during insert: {data}")
+            print(f"Integrity error occurred during insert: {e}")
             return -1  # Handle integrity error
         except Exception as e:
             self.session.rollback()  # Ensure rollback on any other error

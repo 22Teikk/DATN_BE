@@ -8,8 +8,8 @@ class Cart(Base):
     __tablename__ = 'Cart'
     __back_populates__ = 'carts'
     _id = Column(String(length=36) ,primary_key=True)
-    user_id = Column(String(length=36), ForeignKey('User._id'), unique=True)
-    product_id = Column(String(length=36), ForeignKey('Product._id'), unique=True)
+    user_id = Column(String(length=36), ForeignKey('User._id'))
+    product_id = Column(String(length=36), ForeignKey('Product._id'))
     created_at = Column(DateTime())
     quantity = Column(Integer)
 
