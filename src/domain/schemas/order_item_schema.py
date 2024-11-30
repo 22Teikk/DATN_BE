@@ -7,4 +7,4 @@ class OrderItemSchema(Schema):
     product_id = fields.Str(required=True, metadata={"description": "Product ID"})
     order_id = fields.Str(required=True, metadata={"description": "Order ID"})
     price = fields.Float(required=True, metadata={"description": "Price of the product"})
-    estimate_delivery_time = fields.DateTime(required=True, metadata={"description": "Estimate Delivery Time of the product"})
+    estimate_delivery_time = fields.Str(required=True, metadata={"description": "Estimate Delivery Time of the product"})

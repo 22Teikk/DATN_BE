@@ -8,12 +8,13 @@ class Order(Base):
     __tablename__ = 'Order'
     __back_populates__ = 'orders'
     _id = Column(String(length=36) ,primary_key=True)
-    created_at = Column(DateTime(), nullable=False)
+    created_at = Column(String(length=100), nullable=False)
     status = Column(String(length=50), nullable=False)
     total = Column(Integer, nullable=False)
     lat = Column(Float, nullable=True)
     long = Column(Float, nullable=True)
     is_shipment = Column(Boolean, nullable=False)
+    description = Column(String(length="255"), nullable=False)
     user_id = Column(String(length=36), ForeignKey('User._id'))
     payment_id = Column(String(length=36), ForeignKey('Payment._id'))
     users = relationship("UserProfile", back_populates=__back_populates__)
