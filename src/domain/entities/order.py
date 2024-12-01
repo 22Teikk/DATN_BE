@@ -28,6 +28,7 @@ class Order(Base):
         user_id: str,
         payment_id: str,
         is_shipment: bool,
+        description: str,
         created_at: datetime.datetime = None,
         lat: float = None,
         long: float = None,
@@ -41,3 +42,4 @@ class Order(Base):
         self.payment_id = payment_id
         self.lat = lat
         self.long = long
+        self.description = description

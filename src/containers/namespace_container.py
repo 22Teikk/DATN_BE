@@ -169,6 +169,7 @@ class NamespaceContainer:
         )
         OrderNamespace(
             container=OrderContainer(self.repository_container),
+            cart_container=CartContainer(self.repository_container),
             schema=OrderSchema(),
             api=self.api,
             namespace_name="orders",
