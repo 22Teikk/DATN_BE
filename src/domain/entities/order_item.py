@@ -12,7 +12,6 @@ class OrderItem(Base):
     order_id = Column(String(length=36), ForeignKey('Order._id'))
     quantity = Column(Integer, nullable=False)
     price = Column(DECIMAL(10, 2), nullable=False)
-    estimate_delivery_time = Column(String(length=100), nullable=False)
     orders = relationship("Order", back_populates=___back_populates__)
     products = relationship("Product", back_populates=___back_populates__)
     def __init__(
@@ -22,11 +21,9 @@ class OrderItem(Base):
         order_id: str,
         quantity: int,
         price: float,
-        estimate_delivery_time: str,
         ):
         self._id = _id
         self.product_id = product_id
         self.order_id = order_id
         self.quantity = quantity
         self.price = price
-        self.estimate_delivery_time = estimate_delivery_time
