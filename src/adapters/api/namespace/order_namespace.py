@@ -34,6 +34,21 @@ class OrderNamespace(EntityNamespace):
                 else:
                     return {"error": "User ID not provided"}, 400
                 
+        @self.namespace.route("/status")
+        class OrderStatus(Resource):
+            @self.namespace.doc(f"update_{entity_name}_status", security="Bearer Auth")
+            @self.namespace.expect(schema)
+            @self.namespace.response(200, f"{entity_name} updated")
+            @self.namespace.response(404, f"{entity_name} not found")
+            @self.namespace.response(401, "Unauthorized")
+            def get(self):
+                status = request.args.get("status")
+                if status:
+                    items = container.usecase.find_by_query({"status" : status})
+                    return schema.dump(items, many=True), 200
+                else:
+                    return {"error": "Status not provided"}, 400
+                
     def create_order(self):
         data = request.get_json()
         if data is None:

@@ -59,7 +59,7 @@ class AuthNamespace:
                 user = dict(container.usecase.find_by_query({"username": user_name})[0]._mapping)
                 if user and (check_password_hash(password=password, pwhash=user['password'])):
                     role = role_container.usecase.find_by_id(user['role_id'])
-                    if role['name'] == 'Admin':
+                    if role['name'] == 'Client':
                         access_token = create_access_token(identity=user_name)
                         refresh_token = create_refresh_token(identity=user_name)
                         return {

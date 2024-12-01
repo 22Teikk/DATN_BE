@@ -17,3 +17,8 @@ icon = "♨️"
 path = "src/pages/store.py"
 name = "Store"
 icon = "💼"
+
+[[pages]]
+path = "src/pages/employee.py"
+name = "Employee"
+icon = "💼"
