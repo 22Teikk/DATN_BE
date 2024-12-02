@@ -4,6 +4,11 @@ name = "Home"
 icon = "🏠"
 
 [[pages]]
+path = "src/pages/report.py"
+name = "Report"
+icon = "📄"
+
+[[pages]]
 path = "src/pages/category.py"
 name = "Category"
 icon = "📚"
@@ -21,9 +26,9 @@ icon = "💼"
 [[pages]]
 path = "src/pages/employee.py"
 name = "Employee"
-icon = "💼"
+icon = "👨"
 
 [[pages]]
 path = "src/pages/customer.py"
 name = "Customer"
-icon = "💼"
+icon = "👼"
