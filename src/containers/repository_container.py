@@ -98,3 +98,7 @@ class RepositoryContainer:
         self.image_repository = MySQLRepository(
             self.sqldb.get_session(), self.sqldb.get_table(Image.__tablename__, Image), self._cache, ImageSchema()
         )
+
+        self.working_repository = MongoRepository(
+            self.mongodb.get_collection("working"), self._cache
+        )

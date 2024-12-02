@@ -1,6 +1,9 @@
 from flask import Blueprint, Flask
 from flask_restx import Api
 
+from src.adapters.api.namespace.working_namespace import WorkingNamespace
+from src.containers.working_container import WorkingContainer
+from src.domain.schemas.working_schema import WorkingSchema
 from src.adapters.api.namespace.image_namespace import ImageNamespace
 from src.containers.image_container import ImageContainer
 from src.domain.schemas.image_schema import ImageSchema
@@ -197,4 +200,11 @@ class NamespaceContainer:
             container=ImageContainer(self.repository_container),
             schema=ImageSchema(),
             entity_name="Image"
+        )
+        WorkingNamespace(
+            container=WorkingContainer(self.repository_container),
+            schema=WorkingSchema(),
+            api=self.api,
+            namespace_name="working",
+            entity_name="Working"
         )

@@ -105,3 +105,9 @@ class MongoRepository(EntityRepository):
 
     def create_index(self, field: str):
         return self._collection.create_index([(field, 1)])
+
+    def get_table_manager(self):
+        raise NotImplementedError
+
+    def get_session_manager(self):
+        raise NotImplementedError
