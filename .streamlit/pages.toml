@@ -22,3 +22,8 @@ icon = "💼"
 path = "src/pages/employee.py"
 name = "Employee"
 icon = "💼"
+
+[[pages]]
+path = "src/pages/customer.py"
+name = "Customer"
+icon = "💼"
