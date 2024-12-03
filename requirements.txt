@@ -61,3 +61,4 @@ st_pages
 plotly
 streamlit-image-select
 matplotlib
+cryptography
