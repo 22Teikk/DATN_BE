@@ -74,3 +74,14 @@ class SocketIOApplication:
             order_id = data.get("order_id")
             print("Hehe")
             emit("message", {"customer_id": customer_id, "employee_id": employee_id, "order_id": order_id}, room=EMPLOYEE_ROOM)
+
+        @self.io.on("send_location")
+        def send_location(data):
+            """
+            Send employee's location to customer.
+            """
+            customer_id = data.get("customer_id")
+            order_id = data.get("order_id")
+            lat = data.get("lat")
+            long = data.get("long")
+            emit("get_location", {"customer_id": customer_id, "order_id": order_id, "lat": lat, "long": long}, room=EMPLOYEE_ROOM)
