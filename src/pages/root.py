@@ -25,19 +25,24 @@ order_item_container = OrderItemContainer(repository_container)
 product_container = ProductContainer(repository_container)
 category_container = CategoryContainer(repository_container)
 
-category_data = CategorySchema().dump(category_container.usecase.find_by_query(), many=True)
-products_data = ProductSchema().dump(product_container.usecase.find_by_query(), many=True)
-orders_data = OrderSchema().dump(order_container.usecase.find_by_query(), many=True)
-order_items_data = OrderItemSchema().dump(order_item_container.usecase.find_by_query(), many=True)
+@st.cache_data(ttl=60)
+def load_data():
+    st.session_state.category_data = CategorySchema().dump(category_container.usecase.find_by_query(), many=True)
+    st.session_state.products_data = ProductSchema().dump(product_container.usecase.find_by_query(), many=True)
+    st.session_state.orders_data = OrderSchema().dump(order_container.usecase.find_by_query(), many=True)
+    st.session_state.order_items_data = OrderItemSchema().dump(order_item_container.usecase.find_by_query(), many=True)
+
+if 'category_data' or 'products_data' or 'orders_data' or 'order_items_data' not in st.session_state:
+    load_data()
 
 def load_pie_chart_product_sale():
-    order_items_df = pd.DataFrame(order_items_data)
+    order_items_df = pd.DataFrame(st.session_state.order_items_data)
 # Tính tổng số lượng cho mỗi sản phẩm
     product_sales = order_items_df.groupby("product_id")["quantity"].sum().reset_index()
 
     # Bước 2: Lấy tên sản phẩm từ list products
     # Tạo một dictionary từ list products để tra cứu tên sản phẩm
-    product_names = {product["_id"]: product["name"] for product in products_data}
+    product_names = {product["_id"]: product["name"] for product in st.session_state.products_data}
 
     # # Thêm cột "product_name" vào product_sales
     product_sales["product_name"] = product_sales["product_id"].map(product_names)
@@ -53,10 +58,10 @@ def load_pie_chart_product_sale():
     
 
 def chart_product_sale_by_category():
-    orders_df = pd.DataFrame(orders_data)
-    order_items_df = pd.DataFrame(order_items_data)
-    products_df = pd.DataFrame(products_data)
-    categories_df = pd.DataFrame(category_data)
+    orders_df = pd.DataFrame(st.session_state.orders_data)
+    order_items_df = pd.DataFrame(st.session_state.order_items_data)
+    products_df = pd.DataFrame(st.session_state.products_data)
+    categories_df = pd.DataFrame(st.session_state.category_data)
     # Bước 1: Kết hợp OrderItem và Product để tính số lượng bán được của từng sản phẩm
     merged_df = pd.merge(order_items_df, products_df, left_on="product_id", right_on="_id", how="inner")
 

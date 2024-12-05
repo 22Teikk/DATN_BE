@@ -19,24 +19,25 @@ order_container = OrderContainer(repository_container)
 order_item_container = OrderItemContainer(repository_container)
 st.write("## Customer")
 
-orders_data = OrderSchema().dump(order_container.usecase.find_by_query(), many=True)
-order_items_data = OrderItemSchema().dump(order_item_container.usecase.find_by_query(), many=True)
-users_data = UserProfileSchema().dump(user_container.usecase.find_by_query({"role_id": "1"}), many=True)
+@st.cache_data(ttl=60)
+def load_data():
+    st.session_state.orders_data = OrderSchema().dump(order_container.usecase.find_by_query(), many=True)
+    st.session_state.order_items_data = OrderItemSchema().dump(order_item_container.usecase.find_by_query(), many=True)
+    st.session_state.users_data = UserProfileSchema().dump(user_container.usecase.find_by_query({"role_id": "1"}), many=True)
 def load_user_data():
     data = user_container.usecase.find_by_query({"role_id": "1"})
     df = pd.DataFrame.from_dict(data)
     
     if not df.empty:
-        # Kiểm tra nếu cột 'Select' chưa tồn tại, nếu chưa thì thêm vào
         if "Select" not in df.columns:
-            df.insert(0, "Select", False)  # Thêm cột checkbox vào vị trí đầu tiên
+            df.insert(0, "Select", False) 
         else:
-            # Nếu cột 'Select' đã tồn tại nhưng không ở đầu, đưa nó về đầu
             select_col = df.pop("Select")
-            df.insert(0, "Select", False)  # Đảm bảo cột 'Select' ở vị trí đầu tiên
+            df.insert(0, "Select", False) 
         
     st.session_state.df_app = df
     st.session_state.dek = str(uuid.uuid4()) 
+    load_data()
 
 if 'dek' not in st.session_state:
     st.session_state.dek = str(uuid.uuid4())
@@ -45,17 +46,15 @@ if 'df_app' not in st.session_state:
 
 def delete_rows():
     edited_df["Select"] = edited_df["Select"].fillna(False)
-    # Lọc các dòng được chọn
     selected_rows = edited_df[edited_df["Select"]]
     if selected_rows.empty:
         st.warning("No rows selected")
     else:
         for row in selected_rows.to_dict("records"):
-            user_container.usecase.delete(row["_id"])  # Xóa trong DB
+            user_container.usecase.delete(row["_id"]) 
         load_user_data()
 
 def save_records():
-    # Chuẩn bị dữ liệu để lưu
     records = edited_df.drop(columns=["Select"]).to_dict("records")  # Bỏ cột Select
     for record in records:
         if "_id" not in record or not record["_id"] or np.isnan(record["_id"]):
@@ -69,46 +68,35 @@ import plotly.express as px
 col1, col2 = st.columns(2)
 
 def load_user_order_most():
-    users_df = pd.DataFrame(users_data)
-    orders_df = pd.DataFrame(orders_data)
+    users_df = pd.DataFrame(st.session_state.users_data)
+    orders_df = pd.DataFrame(st.session_state.orders_data)
 
-    # Kết hợp dữ liệu User và Order dựa trên khóa ngoại user_id
     merged_df = orders_df.merge(users_df, left_on="user_id", right_on="_id", how="inner")
 
-    # Thống kê số lượng đơn hàng theo từng người dùng
     order_count = merged_df.groupby(["user_id", "name"])["_id_x"].count().reset_index()
 
-    # Đổi tên cột cho dễ hiểu
     order_count.rename(columns={"_id_x": "order_count"}, inplace=True)
 
-    # Sắp xếp theo số lượng đơn hàng giảm dần
     order_count = order_count.sort_values(by="order_count", ascending=False)
     
     st.write("## Users with the Most Orders")
     st.write(order_count)
 
 def load_user_order_cost():
-    users_df = pd.DataFrame(users_data)
-    orders_df = pd.DataFrame(orders_data)
-    order_items_df = pd.DataFrame(order_items_data)
+    users_df = pd.DataFrame(st.session_state.users_data)
+    orders_df = pd.DataFrame(st.session_state.orders_data)
+    order_items_df = pd.DataFrame(st.session_state.order_items_data)
 
-    # Bước 1: Kết hợp dữ liệu
-    # Kết hợp OrderItem với Order để lấy thông tin user_id
     order_items_with_user = order_items_df.merge(orders_df, left_on="order_id", right_on="_id", how="inner")
 
-    # Kết hợp tiếp với User để lấy thông tin người dùng
     order_items_with_user = order_items_with_user.merge(users_df, left_on="user_id", right_on="_id", how="inner")
 
-    # Bước 2: Tính tổng tiền cho từng OrderItem
     order_items_with_user["total_price"] = order_items_with_user["quantity"] * order_items_with_user["price"]
 
-    # Bước 3: Tính tổng tiền mua hàng theo từng người dùng
     user_total_spending = order_items_with_user.groupby(["user_id", "name"])["total_price"].sum().reset_index()
 
-    # Đổi tên cột cho dễ hiểu
     user_total_spending.rename(columns={"total_price": "total_spent"}, inplace=True)
 
-    # Sắp xếp theo tổng tiền giảm dần
     user_total_spending = user_total_spending.sort_values(by="total_spent", ascending=False)
     st.write("## User Spending Amount")
     st.write(user_total_spending)
@@ -121,18 +109,14 @@ edited_df = st.data_editor(
     key=st.session_state.dek,
 )
 
-# Các nút chức năng
 c1, c2, c3 = st.columns(3)
 
-# Nút Reset
 with c1:
     st.button("Reset", on_click=load_user_data ,use_container_width=True, type="secondary")
 
-# Nút Delete
 with c2:
     st.button("Delete", on_click=delete_rows, use_container_width=True, type="secondary")
 
-# Nút Save Change
 with c3:
     st.button("Save Change", on_click=save_records, use_container_width=True, type="primary")
 

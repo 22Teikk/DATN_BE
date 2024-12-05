@@ -19,9 +19,11 @@ user_container = UserProfileContainer(repository_container)
 order_container = OrderContainer(repository_container)
 working_container = WorkingContainer(repository_container)
 
-users_data = UserProfileSchema().dump(user_container.usecase.find_by_query(), many=True)
-workings_data = working_container.usecase.find_by_query()
-orders_data = OrderSchema().dump(order_container.usecase.find_by_query() , many=True)
+@st.cache_data(ttl=60)
+def load_data():
+    st.session_state.users_data = UserProfileSchema().dump(user_container.usecase.find_by_query(), many=True)
+    st.session_state.workings_data = working_container.usecase.find_by_query()
+    st.session_state.orders_data = OrderSchema().dump(order_container.usecase.find_by_query() , many=True)
 
 # Lấy dữ liệu ứng dụng
 def load_user_data():
@@ -39,11 +41,14 @@ def load_user_data():
         
     st.session_state.df_app = df
     st.session_state.dek_employee = str(uuid.uuid4()) 
+    load_data()
 
 if 'dek_employee' not in st.session_state:
     st.session_state.dek_employee = str(uuid.uuid4())
 if 'df_app' not in st.session_state:
     load_user_data()
+if 'users_data' or 'workings_data' or 'orders_data' not in st.session_state:
+    load_data()
 
 def delete_rows():
     edited_df["Select"] = edited_df["Select"].fillna(False)
@@ -65,9 +70,9 @@ def save_records():
     user_container.usecase.upserts(records)  # Lưu dữ liệu vào DB
 
 def load_employee_performance():
-    users_df = pd.DataFrame(users_data)
-    workings_df = pd.DataFrame(workings_data)
-    orders_df = pd.DataFrame(orders_data)
+    users_df = pd.DataFrame(st.session_state.users_data)
+    workings_df = pd.DataFrame(st.session_state.workings_data)
+    orders_df = pd.DataFrame(st.session_state.orders_data)
 
     # Bước 1: Kết hợp Working với Order dựa trên order_id
     workings_with_order = workings_df.merge(orders_df, left_on="order_id", right_on="_id", how="inner")
